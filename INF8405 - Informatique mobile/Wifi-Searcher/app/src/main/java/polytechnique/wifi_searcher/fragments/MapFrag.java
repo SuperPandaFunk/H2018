@@ -1,8 +1,12 @@
 package polytechnique.wifi_searcher.fragments;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +30,11 @@ public class MapFrag extends Fragment{
         @Override
         public void onMapReady(GoogleMap googleMap) {
             //TODO: Ajouter les marqueurs ici avec l'objet googleMap
+            if ( ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+        googleMap.setMyLocationEnabled(true);
         }
     };
 
