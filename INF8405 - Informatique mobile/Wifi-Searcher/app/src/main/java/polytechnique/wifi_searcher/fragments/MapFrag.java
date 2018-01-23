@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.wifi.ScanResult;
@@ -19,6 +20,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -53,12 +56,13 @@ public class MapFrag extends Fragment{
     private GoogleMap mGoogleMap;
     private Timer timer;
     private LatLng _LatLng;
-    private ArrayAdapter adapter;
-    private ListView list;
-    private ArrayList<String> wifis;
-    private WifiInfo wifiInfo;
-    private WifiManager wifiManager;
-    private  WifiScanReceiver wifiReceiver;
+
+
+    WifiManager mainWifi;
+    WifiReceiver receiverWifi;
+
+    private final Handler handler = new Handler();
+
     MapView mMapView;
     OnSuccessListener locationSuccess =  new OnSuccessListener<Location>() {
         @Override
@@ -95,39 +99,52 @@ public class MapFrag extends Fragment{
         View view = inflater.inflate(R.layout.map_layout, container, false);
         initializeView(view, savedInstanceState);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                mHandler.obtainMessage(1).sendToTarget();
-            }
-        }, 5000, 10000);
+        searchForWifi();
         return view;
     }
 
-    public Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            searchForWifi();
-        }
-    };
 
     private void searchForWifi()
     {
-        wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        wifiReceiver = new WifiScanReceiver();
-        wifiInfo = wifiManager.getConnectionInfo();
+        Log.d("debug", "Start scanning");
+        mainWifi = (WifiManager)getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        receiverWifi = new WifiReceiver();
+        getContext().getApplicationContext().registerReceiver(receiverWifi, new IntentFilter(
+                WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        if(mainWifi.isWifiEnabled()==false)
+        {
+            mainWifi.setWifiEnabled(true);
+        }
 
 
-
-        wifis = new ArrayList<String>(); //initialize wifis
-        wifis.add("loading...");
-
-        Log.d("debug", "Start scraning");
-        wifiManager.startScan();
+        doInback();
 
         /*mGoogleMap.addMarker(new MarkerOptions().position(_LatLng))
         .setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));*/
+    }
+
+    public void doInback()
+    {
+        handler.postDelayed(new Runnable() {
+
+            @Override
+            public void run()
+            {
+                // TODO Auto-generated method stub
+                mainWifi = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+                if (receiverWifi==null) {
+                    receiverWifi = new WifiReceiver();
+                }
+                getContext().getApplicationContext().registerReceiver(receiverWifi, new IntentFilter(
+                        WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+                mainWifi.startScan();
+                doInback();
+            }
+        }, 10000);
+
     }
 
     @Override
@@ -144,12 +161,15 @@ public class MapFrag extends Fragment{
 
     @Override
     public void onResume() {
+        getContext().getApplicationContext().registerReceiver(receiverWifi, new IntentFilter(
+                WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         super.onResume();
         mMapView.onResume();
     }
 
     @Override
     public void onPause() {
+        getContext().getApplicationContext().unregisterReceiver(receiverWifi);
         super.onPause();
         mMapView.onPause();
     }
@@ -166,27 +186,16 @@ public class MapFrag extends Fragment{
         mMapView.onLowMemory();
     }
 
-    class WifiScanReceiver extends BroadcastReceiver {
-        @SuppressLint("UseValueOf")
-        public void onReceive(Context c, Intent intent) {
-            List<ScanResult> wifiScanList = wifiManager.getScanResults();
-            //wifis = new String[wifiScanList.size()]; //remove this
-            wifis.clear(); //add this
-            Log.d("debug", "before loop");
-            for (int i = 0; i < wifiScanList.size(); i++) {
-                String ssid = wifiScanList.get(i).SSID; //Get the SSID
-                String bssid =  wifiScanList.get(i).BSSID; //Get the BSSID
-                //use add here:
-                wifis.add( ssid + " " + bssid + " " +((wifiScanList.get(i)).toString()) ); //append to the other data
-                Log.d("debug", ssid + "\t" + bssid);
+    class WifiReceiver extends BroadcastReceiver
+    {
+        public void onReceive(Context c, Intent intent)
+        {
+            List<ScanResult> wifiList = mainWifi.getScanResults();
+            for(int i = 0; i < wifiList.size(); ++i)
+            {
+                Log.d("debug",i + "\t" + wifiList.get(i).SSID);
             }
-
-            adapter.notifyDataSetChanged(); //add this
-           // wifiManager.startScan(); //start a new scan to update values faster
-
-            //ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(),
-            //       android.R.layout.simple_list_item_1, wifis)
-            //list.setAdapter(adapter);
         }
     }
+
 }
