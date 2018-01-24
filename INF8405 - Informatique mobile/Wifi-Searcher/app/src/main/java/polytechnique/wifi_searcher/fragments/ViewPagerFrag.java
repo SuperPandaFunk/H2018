@@ -17,7 +17,38 @@ import polytechnique.wifi_searcher.R;
 
 public class ViewPagerFrag extends Fragment {
 
+    private final int MAP_FRAG = 0;
+    private final int LIST_FRAG = 1;
+    private final int BATTERY_FRAG = 2;
     private ViewPager viewPager;
+
+    private ViewPager.OnPageChangeListener pagerListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            switch (position){
+                case MAP_FRAG:
+                default:
+                    ((NavigationBarFrag)getActivity().getSupportFragmentManager().findFragmentById(R.id.navigationBarContainer)).changeColor(MAP_FRAG);
+                    break;
+                case LIST_FRAG:
+                    ((NavigationBarFrag)getActivity().getSupportFragmentManager().findFragmentById(R.id.navigationBarContainer)).changeColor(LIST_FRAG);
+                    break;
+                case BATTERY_FRAG:
+                    ((NavigationBarFrag)getActivity().getSupportFragmentManager().findFragmentById(R.id.navigationBarContainer)).changeColor(BATTERY_FRAG);
+                    break;
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
 
     @Nullable
     @Override
@@ -33,6 +64,12 @@ public class ViewPagerFrag extends Fragment {
 
     private void initializeView(View view){
         viewPager = (ViewPager)view.findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.addOnPageChangeListener(pagerListener);
         viewPager.setAdapter(new CustumViewPagerAdapter(getActivity().getSupportFragmentManager()));
+    }
+
+    public ViewPager getViewPager(){
+        return viewPager;
     }
 }
