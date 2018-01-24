@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
@@ -38,11 +40,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import polytechnique.wifi_searcher.R;
 
 /**
@@ -56,7 +63,8 @@ public class MapFrag extends Fragment{
     private GoogleMap mGoogleMap;
     private Timer timer;
     private LatLng _LatLng;
-
+    private Realm realm;
+    private Geocoder geocoder;
 
     WifiManager mainWifi;
     WifiReceiver receiverWifi;
@@ -78,6 +86,7 @@ public class MapFrag extends Fragment{
         public void onMapReady(GoogleMap googleMap) {
             //TODO: Ajouter les marqueurs ici avec l'objet googleMap
             mGoogleMap = googleMap;
+            geocoder = new Geocoder(getContext(), Locale.getDefault());
             if ( ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
 
                 ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -133,12 +142,12 @@ public class MapFrag extends Fragment{
             public void run()
             {
                 // TODO Auto-generated method stub
-                mainWifi = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                mainWifi = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
                 if (receiverWifi==null) {
                     receiverWifi = new WifiReceiver();
                 }
-                getContext().getApplicationContext().registerReceiver(receiverWifi, new IntentFilter(
+                getActivity().getApplicationContext().registerReceiver(receiverWifi, new IntentFilter(
                         WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
                 mainWifi.startScan();
                 doInback();
@@ -157,6 +166,7 @@ public class MapFrag extends Fragment{
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
         mMapView.getMapAsync(onMapReadyCallback);
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -193,9 +203,8 @@ public class MapFrag extends Fragment{
             List<ScanResult> wifiList = mainWifi.getScanResults();
             for(int i = 0; i < wifiList.size(); ++i)
             {
-                Log.d("debug",i + "\t" + wifiList.get(i).SSID);
+                Log.d("debug",i + "\t" + wifiList.get(i));
             }
         }
     }
-
 }
