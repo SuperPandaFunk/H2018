@@ -1,15 +1,16 @@
 package ca.polymtl.inf8480.tp1.client;
-
+import java.util.Arrays;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+
 import ca.polymtl.inf8480.tp1.shared.ServerInterface;
 
 public class Client {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		String distantHostname = null;
 		int sizeOctet = 0;
 		
@@ -79,10 +80,14 @@ public class Client {
 	}
 
 	private void appelNormal(int taille) {
-		byte[] tableau = new byte[(int)(java.lang.Math.pow(10, taille))];
+		int[] tableau;
+		switch (taille) {
+			case 1: tableau = new int[10];
+			default: tableau = new int[1];
+		}
+		Arrays.fill(tableau,1);
 		long start = System.nanoTime();
-		//int result = localServer.execute(4, 7);
-		localServer.empty(tableau);
+		localServer.execute(tableau);
 		long end = System.nanoTime();
 
 		System.out.println("Temps écoulé appel normal: " + (end - start)
@@ -92,15 +97,19 @@ public class Client {
 
 	private void appelRMILocal(int taille) {
 		try {
-			byte[] tableau = new byte[(int)(java.lang.Math.pow(10, taille))];
+		int[] tableau;
+		switch (taille) {
+			case 1: tableau = new int[10];
+			default: tableau = new int[1];
+		}
+		Arrays.fill(tableau,1);
 			long start = System.nanoTime();
-			//int result = localServerStub.execute(4, 7);
-			localServerStub.empty(tableau);
+			localServerStub.execute(tableau);
 			long end = System.nanoTime();
 
 			System.out.println("Temps écoulé appel RMI local: " + (end - start)
 					+ " ns");
-			//System.out.println("Résultat appel RMI local: " + result);
+		//	System.out.println("Résultat appel RMI local: " + result);
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		}
@@ -108,10 +117,14 @@ public class Client {
 
 	private void appelRMIDistant(int taille) {
 		try {
-			byte[] tableau = new byte[(int)(java.lang.Math.pow(10, taille))];
+		int[] tableau;
+		switch (taille) {
+			case 1: tableau = new int[10];
+			default: tableau = new int[1];
+		}
+				Arrays.fill(tableau,1);
 			long start = System.nanoTime();
-			//int result = distantServerStub.execute(4, 7);
-			localServerStub.empty(tableau);
+			distantServerStub.execute(tableau);
 			long end = System.nanoTime();
 
 			System.out.println("Temps écoulé appel RMI distant: "

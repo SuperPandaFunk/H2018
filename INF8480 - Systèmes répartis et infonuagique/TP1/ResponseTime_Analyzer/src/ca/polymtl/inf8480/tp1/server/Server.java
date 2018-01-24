@@ -9,13 +9,12 @@ import java.rmi.server.UnicastRemoteObject;
 import ca.polymtl.inf8480.tp1.shared.ServerInterface;
 
 public class Server implements ServerInterface {
-
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Server server = new Server();
 		server.run();
 	}
 
-	public Server() {
+	public Server() throws RemoteException {
 		super();
 	}
 
@@ -25,9 +24,8 @@ public class Server implements ServerInterface {
 		}
 
 		try {
-			ServerInterface stub = (ServerInterface) UnicastRemoteObject
-					.exportObject(this, 0);
 
+			ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(this,0);
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind("server", stub);
 			System.out.println("Server ready.");
@@ -46,12 +44,7 @@ public class Server implements ServerInterface {
 	 * paramètre.
 	 */
 	@Override
-	public int execute(int a, int b) throws RemoteException {
-		return a + b;
-	}
-	
-	@Override
-	public void empty(byte[] tableau) throws RemoteException {
-
+	public void execute(int[] tableau) throws RemoteException {
 	}
 }
+

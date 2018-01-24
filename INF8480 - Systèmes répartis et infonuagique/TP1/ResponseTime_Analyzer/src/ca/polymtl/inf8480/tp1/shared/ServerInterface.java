@@ -4,6 +4,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ServerInterface extends Remote {
-	int execute(int a, int b) throws RemoteException;
-	void empty(byte[] tableau) throws RemoteException;
+	void execute(int[] tableau) throws RemoteException;
 }
