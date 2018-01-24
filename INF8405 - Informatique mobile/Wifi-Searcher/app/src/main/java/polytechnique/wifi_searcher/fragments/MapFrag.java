@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.realm.Realm;
 import polytechnique.wifi_searcher.R;
 
 /**
@@ -56,6 +57,7 @@ public class MapFrag extends Fragment{
     private GoogleMap mGoogleMap;
     private Timer timer;
     private LatLng _LatLng;
+    private Realm realm;
 
 
     WifiManager mainWifi;
@@ -157,6 +159,7 @@ public class MapFrag extends Fragment{
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
         mMapView.getMapAsync(onMapReadyCallback);
+        realm = Realm.getDefaultInstance();
     }
 
     @Override

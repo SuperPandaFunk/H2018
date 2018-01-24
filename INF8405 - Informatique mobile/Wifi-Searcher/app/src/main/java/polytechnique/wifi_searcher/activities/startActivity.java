@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import polytechnique.wifi_searcher.R;
 
 public class startActivity extends AppCompatActivity {
@@ -43,6 +45,14 @@ public class startActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("my_book_realm.realm")
+                .build();
+        Realm.setDefaultConfiguration(config);
+
+
         setContentView(R.layout.activity_start);
         initializeView();
         initializePermission();
