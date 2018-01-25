@@ -142,14 +142,17 @@ public class MapFrag extends Fragment{
             public void run()
             {
                 // TODO Auto-generated method stub
-                mainWifi = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                if (getActivity().getApplicationContext() != null) {
+                    mainWifi = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-                if (receiverWifi==null) {
-                    receiverWifi = new WifiReceiver();
+                    if (receiverWifi == null) {
+                        receiverWifi = new WifiReceiver();
+                    }
+                    getActivity().getApplicationContext().registerReceiver(receiverWifi, new IntentFilter(
+                            WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+                    mainWifi.startScan();
+
                 }
-                getActivity().getApplicationContext().registerReceiver(receiverWifi, new IntentFilter(
-                        WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-                mainWifi.startScan();
                 doInback();
             }
         }, 10000);

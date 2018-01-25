@@ -85,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rssi"
+            android:layout_below="@id/rssiStatic"
             android:layout_alignStart="@id/rssiStatic"
             android:layout_marginTop="10dp"
             android:textSize="18sp"
@@ -101,13 +101,15 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:textAllCaps="true"
-            android:text="WEP"/>
+            android:text="WEP"
+            android:id="@+id/encryptionKey"/>
 
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:paddingBottom="10dp">
 
         <ImageButton
@@ -118,7 +120,19 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/start_button_background"
-            android:tint="@color/white"/>
+            android:tint="@color/white"
+            android:id="@+id/favorite"/>
+
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/start_button_background"
+            android:src="@drawable/right_arrow"
+            android:scaleType="centerInside"
+            android:tint="@color/white"
+            android:id="@+id/direction"/>
 
     </LinearLayout>
 
