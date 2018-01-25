@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="7"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/question_mark"
+        android:tint="@color/colorAccent"
+        android:id="@+id/wifiType"/>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        >
+
+        <!-- Tout le text ici ne sert que de placeHolder et devrait etre remplacer a l'execution-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:id="@+id/ssidName"
+            android:text="Wifi chez vous"
+            android:maxLines="2"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ssidName"
+            android:layout_alignStart="@id/ssidName"
+            android:id="@+id/streetAddress"
+            android:text="123 Fake street"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/streetAddress"
+            android:layout_alignStart="@id/streetAddress"
+            android:id="@+id/zipCode"
+            android:text="Somewhere, Qc G3D 4S3"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/zipCode"
+            android:layout_alignStart="@id/zipCode"
+            android:id="@+id/country"
+            android:layout_marginBottom="20dp"
+            android:text="Canada"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/lock"
+        android:id="@+id/protection"
+        android:tint="@color/colorAccent"/>
+
+</LinearLayout>

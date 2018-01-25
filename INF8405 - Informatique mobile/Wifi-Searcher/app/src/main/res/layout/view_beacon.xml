@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorAccent"
+        android:id="@+id/toolbar"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wifiType"
+        android:src="@drawable/question_mark"
+        android:tint="@color/colorAccent"
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:id="@+id/ssid"
+        android:text="Startbucks"
+        />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:id="@+id/bssidStatic"
+            android:text="BSSID:"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@id/bssidStatic"
+            android:layout_alignBaseline="@id/bssidStatic"
+            android:text="Voici le BSSID d'un reseau quelquonque qui est tres long"
+            android:id="@+id/bssid"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/bssid"
+            android:layout_alignStart="@id/bssidStatic"
+            android:textSize="18sp"
+            android:text="RSSI:"
+            android:id="@+id/rssiStatic"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_alignStart="@id/bssid"
+            android:layout_alignBaseline="@id/rssiStatic"
+            android:layout_marginEnd="10dp"
+            android:text="Ceci est un tres long RSSI qui est inutile dans la vie"
+            android:id="@+id/rssi"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rssi"
+            android:layout_alignStart="@id/rssiStatic"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            android:text="Clef:"
+            android:id="@+id/clefStatic"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_alignBaseline="@id/clefStatic"
+            android:layout_alignStart="@id/bssid"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:textAllCaps="true"
+            android:text="WEP"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp">
+
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/star"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/start_button_background"
+            android:tint="@color/white"/>
+
+    </LinearLayout>
+
+</LinearLayout>
