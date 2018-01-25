@@ -5,10 +5,10 @@ import android.net.wifi.ScanResult;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.IOException;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import polytechnique.wifi_searcher.R;
 
 /**
  * Created by Étienne on 2018-01-24.
@@ -20,8 +20,8 @@ public class Beacon extends RealmObject {
     private String _SSID;
     private int _RSSI;
     private String _security;
-    private LatLng _location;
-    private Address _addresse;
+    //private LatLng _location;
+    //private Address _addresse;
     private boolean _isPublic;
     private int _typeEmplacement;
     private boolean _isFavorite;
@@ -34,9 +34,9 @@ public class Beacon extends RealmObject {
         _security = scan.capabilities;
         _isPublic = isWifiPublic(scan.capabilities);
         _isFavorite = false;
-        _location = localisation;
+        //_location = localisation;
         _typeEmplacement = -1;
-        _addresse = address;
+        //_addresse = address;
 
     }
 
@@ -47,9 +47,8 @@ public class Beacon extends RealmObject {
 
     public void changeAddress(LatLng location, Address address)
     {
-        _location = location;
-        _addresse = address;
-
+        //_location = location;
+        //_addresse = address;
     }
 
     private boolean isWifiPublic(String capabilities)
@@ -82,13 +81,13 @@ public class Beacon extends RealmObject {
         return _typeEmplacement;
     }
 
-    public  LatLng getLocation(){
+    /*public  LatLng getLocation(){
         return _location;
-    }
+    }*/
 
-    public Address getAddresse(){
+    /*public Address getAddresse(){
         return _addresse;
-    }
+    }*/
 
     public boolean isPublic(){
         return _isPublic;
@@ -96,5 +95,59 @@ public class Beacon extends RealmObject {
 
     public boolean isFavorite(){
         return _isFavorite;
+    }
+
+    /************************* Ajouter pour tester ********************************************/
+    private String _streetAddress, _zipCode, _country, _wifiType;
+
+    public Beacon(String ssid, String security, String streetAddress, String zipCode, String country, String wifiType){
+        _SSID = ssid;
+        _streetAddress = streetAddress;
+        _security = security;
+        _zipCode = zipCode;
+        _country = country;
+        _wifiType = wifiType;
+    }
+
+    public int getTestSecurity(){
+        switch (_security){
+            default:
+            case "public":
+                return R.drawable.open_lock;
+            case "private":
+                return R.drawable.lock;
+        }
+    }
+
+    public int getTestWifiType(){
+        switch (_wifiType){
+            default:
+            case "resto":
+                return R.drawable.restaurant;
+            case "hotel":
+                return R.drawable.hotel;
+            case "shop":
+                return R.drawable.shop;
+            case "hospital":
+                return R.drawable.hospital;
+            case "school":
+                return R.drawable.school;
+            case "entertainment":
+                return R.drawable.entertainment;
+            case "open":
+                return R.drawable.open_space;
+        }
+    }
+
+    public String getTestStreetAddress(){
+        return _streetAddress;
+    }
+
+    public String getTestZipCode(){
+        return _zipCode;
+    }
+
+    public String getTestCountry(){
+        return _country;
     }
 }
