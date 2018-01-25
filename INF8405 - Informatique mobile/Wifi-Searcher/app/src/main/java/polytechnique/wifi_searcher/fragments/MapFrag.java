@@ -150,8 +150,8 @@ public class MapFrag extends Fragment {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                mainWifi = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
+                if (getActivity().getApplicationContext() != null) {
+                    mainWifi = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 if (receiverWifi == null) {
                     receiverWifi = new WifiReceiver();
                 }
@@ -162,6 +162,8 @@ public class MapFrag extends Fragment {
                 }
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(locationComplete);
                 mainWifi.startScan();
+                }
+
                 doInback();
             }
         }, 10000);

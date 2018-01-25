@@ -69,7 +69,7 @@ public class BeaconListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return position;
+        return beaconList.get(position);
     }
 
     @Override

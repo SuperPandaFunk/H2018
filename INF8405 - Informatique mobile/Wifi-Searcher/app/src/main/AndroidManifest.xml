@@ -28,6 +28,11 @@
             android:theme="@style/AppTheme"
             />
 
+        <activity android:name=".activities.ViewBeaconActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBu_Kp6-jjKYhsB40W56nAWIZt-OT0H8TY"/>

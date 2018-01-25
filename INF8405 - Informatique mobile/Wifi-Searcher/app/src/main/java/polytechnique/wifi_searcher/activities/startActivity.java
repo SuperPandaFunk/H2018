@@ -27,7 +27,7 @@ public class startActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent startMapActivity = new Intent(startActivity.this, mapActivity.class);
             startActivity(startMapActivity);
-           // finish();
+            finish();
         }
     };
 
