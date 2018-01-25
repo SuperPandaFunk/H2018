@@ -49,13 +49,13 @@ public class BeaconListAdapter extends BaseAdapter {
         }
         if (thisBeacon != null){
             holder.ssid.setText(thisBeacon.getSSID());
-
+            holder.streetAddress.setText(thisBeacon.getStreetAddress());
+            holder.protection.setImageResource(thisBeacon.getSecurityIco());
+            holder.zipCode.setText(thisBeacon.getZipCode());
+            holder.country.setText(thisBeacon.getCountry());
             //TODO Mettre a jour les informations du beacon
-            holder.streetAddress.setText(thisBeacon.getTestStreetAddress());
-            holder.zipCode.setText(thisBeacon.getTestZipCode());
-            holder.country.setText(thisBeacon.getTestCountry());
             holder.type.setImageResource(thisBeacon.getTestWifiType());
-            holder.protection.setImageResource(thisBeacon.getTestSecurity());
+
 
         }
         convertView.setTag(holder);
