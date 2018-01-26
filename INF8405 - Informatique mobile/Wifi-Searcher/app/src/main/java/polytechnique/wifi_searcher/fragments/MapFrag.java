@@ -45,15 +45,20 @@ import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 import polytechnique.wifi_searcher.R;
+import polytechnique.wifi_searcher.models.Beacon;
 
 /**
  * Created by Vincent on 2018-01-19.
@@ -66,9 +71,11 @@ public class MapFrag extends Fragment {
     private GoogleMap mGoogleMap;
     private Timer timer;
     private LatLng _LatLng;
+    private Address address;
     private Realm realm;
     private Geocoder geocoder;
 
+    private  List<Beacon> beacons;
     WifiManager mainWifi;
     WifiReceiver receiverWifi;
 
@@ -88,6 +95,11 @@ public class MapFrag extends Fragment {
         @Override
         public void onComplete(Task<Location> task) {
             _LatLng = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+            try {
+                address = geocoder.getFromLocation(_LatLng.latitude,_LatLng.longitude,1).get(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     };
@@ -215,10 +227,26 @@ public class MapFrag extends Fragment {
         public void onReceive(Context c, Intent intent)
         {
             List<ScanResult> wifiList = mainWifi.getScanResults();
+            realm.beginTransaction();
             for(int i = 0; i < wifiList.size(); ++i)
             {
-                Log.d("debug",i + "\t" + wifiList.get(i));
+                Beacon result = realm.where(Beacon.class).equalTo("_BSSID",wifiList.get(i).BSSID).findFirst();
+                if(result == null)
+                {
+                    Beacon b = realm.createObject(Beacon.class, wifiList.get(i).BSSID);
+                    b.setBeacon(wifiList.get(i),address);
+                    realm.commitTransaction();
+                }
+                else
+                {
+                    if (result.isStronger(wifiList.get(i).level))
+                    {
+                        result.changeAddress(address);
+                        realm.commitTransaction();
+                    }
+                }
 
+             //   Log.d("debug",i + "\t" +b.getStreetAddress());
             }
         }
     }
