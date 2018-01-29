@@ -43,6 +43,16 @@ public class Beacon extends RealmObject {
         changeAddress(address);
     }
 
+    public void setBeacon(ScanResult scan, Address address)
+    {
+        _SSID = scan.SSID;
+        _RSSI = scan.level;
+        _security = scan.capabilities;
+        _isPublic = isWifiPublic(scan.capabilities);
+        _isFavorite = false;
+        changeAddress(address);
+    }
+
     public  boolean isStronger(int level)
     {
         return level > _RSSI;
