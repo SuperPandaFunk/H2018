@@ -38,6 +38,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,10 +47,12 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -74,6 +77,7 @@ public class MapFrag extends Fragment {
     private Address address;
     private Realm realm;
     private Geocoder geocoder;
+    private Map<String, Marker> markers;
 
     private  List<Beacon> beacons;
     WifiManager mainWifi;
@@ -109,6 +113,7 @@ public class MapFrag extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             //TODO: Ajouter les marqueurs ici avec l'objet googleMap
             mGoogleMap = googleMap;
+            addAllMArkers();
             geocoder = new Geocoder(getContext(), Locale.getDefault());
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -132,28 +137,37 @@ public class MapFrag extends Fragment {
         View view = inflater.inflate(R.layout.map_layout, container, false);
         initializeView(view, savedInstanceState);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+        markers = new HashMap<String, Marker>();
         searchForWifi();
         return view;
     }
 
 
+    private void addAllMArkers()
+    {
+
+        List<Beacon> lBeacon = realm.where(Beacon.class).findAll();
+        for(int i = 0; i < lBeacon.size();++i)
+        {
+            if(lBeacon.get(i).getBSSID() != null)
+            {
+                Marker m = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lBeacon.get(i).getLatitude(), lBeacon.get(i).getLongitude())));
+                markers.put(lBeacon.get(i).getBSSID(), m);
+            }
+        }
+    }
+
     private void searchForWifi() {
 
         Log.d("debug", "Start scanning");
         mainWifi = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
         receiverWifi = new WifiReceiver();
         getContext().getApplicationContext().registerReceiver(receiverWifi, new IntentFilter(
                 WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         if (mainWifi.isWifiEnabled() == false) {
             mainWifi.setWifiEnabled(true);
         }
-
-
         doInback();
-
-        /*mGoogleMap.addMarker(new MarkerOptions().position(_LatLng))
-        .setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));*/
     }
 
     public void doInback() {
@@ -222,31 +236,54 @@ public class MapFrag extends Fragment {
         mMapView.onLowMemory();
     }
 
+    private boolean isnear(Location l)
+    {
+        Location locationB = new Location("point B");
+        locationB.setLongitude(_LatLng.longitude);
+        locationB.setLongitude(_LatLng.latitude);
+
+        return l.distanceTo(locationB) < 50;
+    }
     class WifiReceiver extends BroadcastReceiver
     {
         public void onReceive(Context c, Intent intent)
         {
             List<ScanResult> wifiList = mainWifi.getScanResults();
-            realm.beginTransaction();
+
             for(int i = 0; i < wifiList.size(); ++i)
             {
+                realm.beginTransaction();
                 Beacon result = realm.where(Beacon.class).equalTo("_BSSID",wifiList.get(i).BSSID).findFirst();
                 if(result == null)
                 {
-                    Beacon b = realm.createObject(Beacon.class, wifiList.get(i).BSSID);
-                    b.setBeacon(wifiList.get(i),address);
-                    realm.commitTransaction();
+                    if(wifiList.get(i).SSID != null)
+                    {
+                        Beacon b = realm.createObject(Beacon.class, wifiList.get(i).BSSID);
+                        b.setBeacon(wifiList.get(i), address);
+                        Marker m = mGoogleMap.addMarker(new MarkerOptions().position(_LatLng));
+                        markers.put(b.getBSSID(), m);
+                    }
                 }
                 else
                 {
-                    if (result.isStronger(wifiList.get(i).level))
+                    if(result.isStronger(wifiList.get(i).level))
                     {
                         result.changeAddress(address);
-                        realm.commitTransaction();
+
+                        Marker edit= markers.get(result.getBSSID());
+
+                        if(edit != null)
+                        {
+                            edit.setPosition(_LatLng);
+                        }
+                        else
+                        {
+                            Marker m = mGoogleMap.addMarker(new MarkerOptions().position(_LatLng));
+                            markers.put(result.getBSSID(), m);
+                        }
                     }
                 }
-
-             //   Log.d("debug",i + "\t" +b.getStreetAddress());
+                realm.commitTransaction();
             }
         }
     }

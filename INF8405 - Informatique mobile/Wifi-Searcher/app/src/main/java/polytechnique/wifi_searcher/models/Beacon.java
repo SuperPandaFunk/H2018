@@ -1,6 +1,7 @@
 package polytechnique.wifi_searcher.models;
 
 import android.location.Address;
+import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.support.v4.app.NotificationCompatSideChannelService;
 
@@ -105,6 +106,13 @@ public class Beacon extends RealmObject {
         return _latitude;
     }
 
+    public Location getLocation()
+    {
+        Location l = new Location("Pos");
+        l.setLongitude(_longitude);
+        l.setLatitude(_latitude);
+        return l;
+    }
     /************************* Ajouter pour tester ********************************************/
 
 
