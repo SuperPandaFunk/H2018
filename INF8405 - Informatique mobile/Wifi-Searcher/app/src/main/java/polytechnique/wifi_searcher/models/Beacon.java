@@ -70,7 +70,7 @@ public class Beacon extends RealmObject {
 
     private boolean isWifiPublic(String capabilities)
     {
-        return (capabilities.indexOf("WPA") >= 0 || capabilities.indexOf("EAP") >= 0);
+        return !(capabilities.indexOf("WPA") >= 0 || capabilities.indexOf("EAP") >= 0);
     }
 
 
@@ -133,6 +133,8 @@ public class Beacon extends RealmObject {
     }
 
     public int getTestWifiType(){
+        if (_wifiType == null)
+            return  R.drawable.restaurant;
         switch (_wifiType){
             default:
             case "resto":

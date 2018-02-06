@@ -21,7 +21,7 @@ public class ViewBeaconActivity extends AppCompatActivity {
     //Objet utile une fois realm et l'objet comme tel configurer
     //private Beacon thisBeacon;
     private String givenSSID;
-    private TextView ssid, bssid, rssi, encryptionKey;
+    private TextView ssid, bssid, rssi, encryptionKey, street;
     private ImageButton favorite, direction;
     private ImageView wifiType;
 
@@ -32,6 +32,7 @@ public class ViewBeaconActivity extends AppCompatActivity {
         bssid = (TextView)findViewById(R.id.bssid);
         rssi = (TextView)findViewById(R.id.rssi);
         encryptionKey = (TextView)findViewById(R.id.encryptionKey);
+        street = (TextView)findViewById(R.id.addressValue);
         //TODO: Ajouter des OnItemClickListener pour les bouttons et faire de quoi avec
         favorite = (ImageButton) findViewById(R.id.favorite);
         direction = (ImageButton)findViewById(R.id.direction);
@@ -63,6 +64,7 @@ public class ViewBeaconActivity extends AppCompatActivity {
         bssid.setText(getIntent().getStringExtra("bssid"));
         rssi.setText(getIntent().getStringExtra("rssi"));
         encryptionKey.setText(getIntent().getStringExtra("encryptionKey"));
+        street.setText(getIntent().getStringExtra("addressValue"));
         wifiType.setImageResource(getIntent().getIntExtra("wifiType", R.drawable.question_mark));
     }
 

@@ -7,7 +7,7 @@
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="56dp"
         android:background="@color/colorAccent"
         android:id="@+id/toolbar"
         />
@@ -81,12 +81,33 @@
             android:layout_marginEnd="10dp"
             android:text="Ceci est un tres long RSSI qui est inutile dans la vie"
             android:id="@+id/rssi"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rssiStatic"
             android:layout_alignStart="@id/rssiStatic"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            android:text="Adresse:"
+            android:id="@+id/address"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_alignBaseline="@id/address"
+            android:layout_alignStart="@id/rssi"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:textAllCaps="true"
+            android:text="Value"
+            android:id="@+id/addressValue"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/address"
+            android:layout_alignStart="@id/address"
             android:layout_marginTop="10dp"
             android:textSize="18sp"
             android:text="Clef:"
@@ -103,6 +124,7 @@
             android:textAllCaps="true"
             android:text="WEP"
             android:id="@+id/encryptionKey"/>
+
 
     </RelativeLayout>
 

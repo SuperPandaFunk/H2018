@@ -240,9 +240,10 @@ public class MapFrag extends Fragment {
     {
         Location locationB = new Location("point B");
         locationB.setLongitude(_LatLng.longitude);
-        locationB.setLongitude(_LatLng.latitude);
+        locationB.setLatitude(_LatLng.latitude);
 
-        return l.distanceTo(locationB) < 50;
+        float distance = l.distanceTo(locationB);
+        return  distance< 50.0;
     }
     class WifiReceiver extends BroadcastReceiver
     {
@@ -252,38 +253,66 @@ public class MapFrag extends Fragment {
 
             for(int i = 0; i < wifiList.size(); ++i)
             {
-                realm.beginTransaction();
+                //realm.beginTransaction();
                 Beacon result = realm.where(Beacon.class).equalTo("_BSSID",wifiList.get(i).BSSID).findFirst();
                 if(result == null)
                 {
-                    if(wifiList.get(i).SSID != null)
+                    boolean asEnter = false;
+                    if(wifiList.get(i).SSID != null && !wifiList.get(i).SSID.isEmpty())
                     {
-                        Beacon b = realm.createObject(Beacon.class, wifiList.get(i).BSSID);
-                        b.setBeacon(wifiList.get(i), address);
-                        Marker m = mGoogleMap.addMarker(new MarkerOptions().position(_LatLng));
-                        markers.put(b.getBSSID(), m);
+                        List<Beacon> beaconList = realm.where(Beacon.class).equalTo("_SSID",wifiList.get(i).SSID).findAll();
+                        for(int j = 0; j < beaconList.size() && !asEnter; ++j)
+                        {
+                            if(isnear(beaconList.get(j).getLocation()))
+                            {
+                                if(beaconList.get(j).isStronger(wifiList.get(i).level))
+                                {
+                                    realm.beginTransaction();
+                                        beaconList.get(j).changeAddress(address);
+                                    realm.copyToRealmOrUpdate(beaconList.get(j));
+                                    realm.commitTransaction();
+                                    Marker edit= markers.get( beaconList.get(j).getBSSID());
+
+                                    if(edit != null)
+                                    {
+                                        edit.setPosition(_LatLng);
+                                    }
+                                }
+                                asEnter = true;
+                            }
+                        }
+
+                        if(!asEnter)
+                        {
+                            realm.beginTransaction();
+                            Beacon b = realm.createObject(Beacon.class, wifiList.get(i).BSSID);
+                            b.setBeacon(wifiList.get(i), address);
+                            realm.copyToRealmOrUpdate(b);
+                            realm.commitTransaction();
+                            Marker m = mGoogleMap.addMarker(new MarkerOptions().position(_LatLng));
+                            markers.put(b.getBSSID(), m);
+                        }
+
                     }
+
                 }
                 else
                 {
                     if(result.isStronger(wifiList.get(i).level))
                     {
+                        realm.beginTransaction();
                         result.changeAddress(address);
-
+                        realm.copyToRealmOrUpdate(result);
+                        realm.commitTransaction();
                         Marker edit= markers.get(result.getBSSID());
 
                         if(edit != null)
                         {
                             edit.setPosition(_LatLng);
                         }
-                        else
-                        {
-                            Marker m = mGoogleMap.addMarker(new MarkerOptions().position(_LatLng));
-                            markers.put(result.getBSSID(), m);
-                        }
                     }
                 }
-                realm.commitTransaction();
+                //realm.commitTransaction();
             }
         }
     }
