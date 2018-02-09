@@ -1,32 +1,23 @@
 package ca.polymtl.inf8480.tp1.client;
-import java.util.Arrays;
+
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-
 import ca.polymtl.inf8480.tp1.shared.ServerInterface;
 
 public class Client {
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) {
 		String distantHostname = null;
-		int sizeOctet = 0;
-		
+
 		if (args.length > 0) {
 			distantHostname = args[0];
-			if (args.length > 1) {
-				sizeOctet = Integer.parseInt(args[1]);
-				if (sizeOctet <= 0 && sizeOctet > 7) {
-					System.out.println("Le nombre doit etre comprit entre 1 et 7");
-					return;
-				}
-			}
 		}
 
-		Client client = new Client(distantHostname, sizeOctet);
-		client.run(sizeOctet);
+		Client client = new Client(distantHostname);
+		client.run();
 	}
 
 	FakeServer localServer = null; // Pour tester la latence d'un appel de
@@ -34,7 +25,7 @@ public class Client {
 	private ServerInterface localServerStub = null;
 	private ServerInterface distantServerStub = null;
 
-	public Client(String distantServerHostname, int taille) {
+	public Client(String distantServerHostname) {
 		super();
 
 		if (System.getSecurityManager() == null) {
@@ -49,15 +40,15 @@ public class Client {
 		}
 	}
 
-	private void run(int taille) {
-		appelNormal(taille);
+	private void run() {
+		appelNormal();
 
 		if (localServerStub != null) {
-			appelRMILocal(taille);
+			appelRMILocal();
 		}
 
 		if (distantServerStub != null) {
-			appelRMIDistant(taille);
+			appelRMIDistant();
 		}
 	}
 
@@ -79,57 +70,39 @@ public class Client {
 		return stub;
 	}
 
-	private void appelNormal(int taille) {
-		int[] tableau;
-		switch (taille) {
-			case 1: tableau = new int[10];
-			default: tableau = new int[1];
-		}
-		Arrays.fill(tableau,1);
+	private void appelNormal() {
 		long start = System.nanoTime();
-		localServer.execute(tableau);
+		int result = localServer.test( new byte[20]);
 		long end = System.nanoTime();
 
 		System.out.println("Temps écoulé appel normal: " + (end - start)
 				+ " ns");
-		//System.out.println("Résultat appel normal: " + result);
+		System.out.println("Résultat appel normal: " + result);
 	}
 
-	private void appelRMILocal(int taille) {
+	private void appelRMILocal() {
 		try {
-		int[] tableau;
-		switch (taille) {
-			case 1: tableau = new int[10];
-			default: tableau = new int[1];
-		}
-		Arrays.fill(tableau,1);
 			long start = System.nanoTime();
-			localServerStub.execute(tableau);
+			int result = localServerStub.test( new byte[20]);
 			long end = System.nanoTime();
 
 			System.out.println("Temps écoulé appel RMI local: " + (end - start)
 					+ " ns");
-		//	System.out.println("Résultat appel RMI local: " + result);
+			System.out.println("Résultat appel RMI local: " + result);
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		}
 	}
 
-	private void appelRMIDistant(int taille) {
+	private void appelRMIDistant() {
 		try {
-		int[] tableau;
-		switch (taille) {
-			case 1: tableau = new int[10];
-			default: tableau = new int[1];
-		}
-				Arrays.fill(tableau,1);
 			long start = System.nanoTime();
-			distantServerStub.execute(tableau);
+			int result = distantServerStub.test( new byte[20]);
 			long end = System.nanoTime();
 
 			System.out.println("Temps écoulé appel RMI distant: "
 					+ (end - start) + " ns");
-			//System.out.println("Résultat appel RMI distant: " + result);
+			System.out.println("Résultat appel RMI distant: " + result);
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		}
