@@ -36,8 +36,7 @@ public class ViewBeaconActivity extends AppCompatActivity {
             beacon.toggleFavorite();
             realm.copyToRealmOrUpdate(beacon);
             realm.commitTransaction();
-            favorite.setColorFilter(beacon.isFavorite() ? R.color.yellow : R.color.white);
-
+            favorite.setColorFilter(beacon.isFavorite() ? ContextCompat.getColor(getApplicationContext(), R.color.yellow) : ContextCompat.getColor(getApplicationContext(), R.color.white));
         }
     };
 
@@ -81,8 +80,7 @@ public class ViewBeaconActivity extends AppCompatActivity {
         rssi.setText(Integer.toString(beacon.getRSSI()) + " dp");
         encryptionKey.setText(beacon.getSecurity());
         street.setText(beacon.getStreetAddress());
-        //favorite.setColorFilter(beacon.isFavorite() ? R.color.yellow : R.color.white, PorterDuff.Mode.SRC_ATOP);
-        favorite.setColorFilter(R.color.yellow);
+        favorite.setColorFilter(beacon.isFavorite() ? ContextCompat.getColor(getApplicationContext(), R.color.yellow) : ContextCompat.getColor(getApplicationContext(), R.color.white));
     }
 
     private void getBeacon(){

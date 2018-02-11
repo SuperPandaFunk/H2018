@@ -96,7 +96,7 @@ public class Beacon extends RealmObject {
     }
 
     public boolean isFavorite(){
-        return true;
+        return _Favorite;
     }
 
     public double getLongitude(){

@@ -263,6 +263,8 @@ public class MapFrag extends Fragment {
                                 if(beaconList.get(j).isStronger(wifiList.get(i).level))
                                 {
                                     realm.beginTransaction();
+                                    if (address == null)
+                                        address = getAddress();
                                     beaconList.get(j).changeAddress(address);
                                     realm.copyToRealmOrUpdate(beaconList.get(j));
                                     realm.commitTransaction();

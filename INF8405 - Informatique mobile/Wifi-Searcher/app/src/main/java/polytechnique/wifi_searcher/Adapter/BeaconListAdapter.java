@@ -56,7 +56,7 @@ public class BeaconListAdapter extends BaseAdapter {
             holder.country.setText(thisBeacon.getCountry());
             holder.protection.setColorFilter(ContextCompat.getColor(mContext, thisBeacon.getSecurityColor()));
             holder.favorite.setImageResource(thisBeacon.isFavorite() ? R.drawable.star : R.drawable.wifi_signal);
-            holder.favorite.setColorFilter(thisBeacon.isFavorite() ? R.color.yellow : R.color.colorAccent);
+            holder.favorite.setColorFilter(thisBeacon.isFavorite() ? ContextCompat.getColor(mContext, R.color.yellow) : ContextCompat.getColor(mContext, R.color.colorAccent));
         }
         convertView.setTag(holder);
         return convertView;
