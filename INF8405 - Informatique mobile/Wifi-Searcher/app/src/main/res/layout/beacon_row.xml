@@ -8,11 +8,13 @@
 
     <ImageView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="75dp"
         android:layout_weight="1"
-        android:src="@drawable/question_mark"
+        android:scaleType="centerInside"
+        android:src="@drawable/wifi_signal"
         android:tint="@color/colorAccent"
-        android:id="@+id/wifiType"/>
+        android:id="@+id/wifiType"
+        android:layout_marginStart="10dp"/>
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -67,6 +69,6 @@
         android:layout_weight="1"
         android:src="@drawable/lock"
         android:id="@+id/protection"
-        android:tint="@color/colorAccent"/>
+        android:tint="@color/red"/>
 
 </LinearLayout>

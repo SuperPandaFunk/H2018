@@ -37,12 +37,7 @@ public class ListFrag extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Beacon tmp = (Beacon) parent.getAdapter().getItem(position);
             Intent viewBeacon = new Intent(getActivity().getApplicationContext(), ViewBeaconActivity.class);
-            viewBeacon.putExtra("ssid", tmp.getSSID());
             viewBeacon.putExtra("bssid", tmp.getBSSID());
-            viewBeacon.putExtra("rssi", Integer.toString(tmp.getRSSI()) + " dB");
-            viewBeacon.putExtra("encryptionKey", tmp.getSecurity());
-            viewBeacon.putExtra("wifiType", tmp.getTestWifiType());
-            viewBeacon.putExtra("addressValue", tmp.getStreetAddress());
             startActivity(viewBeacon);
         }
     };

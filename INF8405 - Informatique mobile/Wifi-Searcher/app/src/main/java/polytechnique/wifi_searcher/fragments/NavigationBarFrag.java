@@ -32,7 +32,6 @@ public class NavigationBarFrag extends Fragment{
         public void onClick(View view) {
             viewPager = ((mapActivity)getActivity()).getViewPager();
 
-            changeColor(MAP_FRAG);
             if (viewPager != null){
                 viewPager.setCurrentItem(MAP_FRAG, true);
             }
@@ -44,7 +43,6 @@ public class NavigationBarFrag extends Fragment{
         public void onClick(View view) {
             viewPager = ((mapActivity)getActivity()).getViewPager();
 
-            changeColor(LIST_FRAG);
             if (viewPager != null){
                 viewPager.setCurrentItem(LIST_FRAG, true);
             }
@@ -56,7 +54,6 @@ public class NavigationBarFrag extends Fragment{
         public void onClick(View view) {
             viewPager = ((mapActivity)getActivity()).getViewPager();
 
-            changeColor(BATTERY_FRAG);
             if (viewPager != null){
                 viewPager.setCurrentItem(BATTERY_FRAG, true);
             }

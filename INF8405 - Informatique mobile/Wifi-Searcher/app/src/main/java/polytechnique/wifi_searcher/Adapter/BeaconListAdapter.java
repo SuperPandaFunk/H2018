@@ -1,6 +1,7 @@
 package polytechnique.wifi_searcher.Adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +45,8 @@ public class BeaconListAdapter extends BaseAdapter {
             holder.streetAddress = (TextView)convertView.findViewById(R.id.streetAddress);
             holder.zipCode = (TextView)convertView.findViewById(R.id.zipCode);
             holder.country = (TextView)convertView.findViewById(R.id.country);
-            holder.type = (ImageView)convertView.findViewById(R.id.wifiType);
             holder.protection = (ImageView)convertView.findViewById(R.id.protection);
+            holder.favorite = (ImageView)convertView.findViewById(R.id.wifiType);
         }
         if (thisBeacon != null){
             holder.ssid.setText(thisBeacon.getSSID());
@@ -53,10 +54,9 @@ public class BeaconListAdapter extends BaseAdapter {
             holder.protection.setImageResource(thisBeacon.getSecurityIco());
             holder.zipCode.setText(thisBeacon.getZipCode());
             holder.country.setText(thisBeacon.getCountry());
-            //TODO Mettre a jour les informations du beacon
-            holder.type.setImageResource(thisBeacon.getTestWifiType());
-
-
+            holder.protection.setColorFilter(ContextCompat.getColor(mContext, thisBeacon.getSecurityColor()));
+            holder.favorite.setImageResource(thisBeacon.isFavorite() ? R.drawable.star : R.drawable.wifi_signal);
+            holder.favorite.setColorFilter(thisBeacon.isFavorite() ? R.color.yellow : R.color.colorAccent);
         }
         convertView.setTag(holder);
         return convertView;
@@ -79,6 +79,6 @@ public class BeaconListAdapter extends BaseAdapter {
 
     private class ViewHolder{
         TextView ssid, streetAddress, zipCode, country;
-        ImageView type, protection;
+        ImageView  protection, favorite;
     }
 }

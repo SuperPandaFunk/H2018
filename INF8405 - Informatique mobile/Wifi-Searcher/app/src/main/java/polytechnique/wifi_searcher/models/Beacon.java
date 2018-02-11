@@ -22,16 +22,17 @@ public class Beacon extends RealmObject {
     private String _SSID;
     private int _RSSI;
     private String _security;
-    private String _streetAddress, _zipCode, _country, _wifiType;
+    private String _streetAddress, _zipCode, _country;
     private double _longitude;
     private double _latitude;
+    private boolean _Favorite;
 
     //private LatLng _location;
 
     //private Address _addresse;
     private boolean _isPublic;
 
-    private boolean _isFavorite;
+
 
     public Beacon(){}
     public Beacon(ScanResult scan, Address address){
@@ -40,7 +41,7 @@ public class Beacon extends RealmObject {
         _RSSI = scan.level;
         _security = scan.capabilities;
         _isPublic = isWifiPublic(scan.capabilities);
-        _isFavorite = false;
+        _Favorite = false;
         changeAddress(address);
     }
 
@@ -50,7 +51,7 @@ public class Beacon extends RealmObject {
         _RSSI = scan.level;
         _security = scan.capabilities;
         _isPublic = isWifiPublic(scan.capabilities);
-        _isFavorite = false;
+        _Favorite = false;
         changeAddress(address);
     }
 
@@ -95,7 +96,7 @@ public class Beacon extends RealmObject {
     }
 
     public boolean isFavorite(){
-        return _isFavorite;
+        return true;
     }
 
     public double getLongitude(){
@@ -113,16 +114,19 @@ public class Beacon extends RealmObject {
         l.setLatitude(_latitude);
         return l;
     }
+
+    public void toggleFavorite(){
+        _Favorite = !_Favorite;
+    }
     /************************* Ajouter pour tester ********************************************/
 
 
-    public Beacon(String ssid, String security, String streetAddress, String zipCode, String country, String wifiType){
+    public Beacon(String ssid, String security, String streetAddress, String zipCode, String country){
         _SSID = ssid;
         _streetAddress = streetAddress;
         _security = security;
         _zipCode = zipCode;
         _country = country;
-        _wifiType = wifiType;
     }
 
     public int getSecurityIco(){
@@ -132,26 +136,11 @@ public class Beacon extends RealmObject {
             return R.drawable.lock;
     }
 
-    public int getTestWifiType(){
-        if (_wifiType == null)
-            return  R.drawable.restaurant;
-        switch (_wifiType){
-            default:
-            case "resto":
-                return R.drawable.restaurant;
-            case "hotel":
-                return R.drawable.hotel;
-            case "shop":
-                return R.drawable.shop;
-            case "hospital":
-                return R.drawable.hospital;
-            case "school":
-                return R.drawable.school;
-            case "entertainment":
-                return R.drawable.entertainment;
-            case "open":
-                return R.drawable.open_space;
-        }
+    public int getSecurityColor(){
+        if (_isPublic)
+            return R.color.green;
+        else
+            return R.color.red;
     }
 
     public String getStreetAddress(){

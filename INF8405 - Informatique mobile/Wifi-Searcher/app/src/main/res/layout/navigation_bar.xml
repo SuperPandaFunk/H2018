@@ -26,7 +26,7 @@
             android:layout_weight="1"
             android:src="@drawable/beacon_list"
             android:padding="20dp"
-            android:tint="@color/silver"
+            android:tint="@color/colorAccent"
             android:id="@+id/beacon_list"/>
 
         <View
@@ -41,7 +41,7 @@
             android:layout_weight="1"
             android:src="@drawable/battery"
             android:padding="20dp"
-            android:tint="@color/silver"
+            android:tint="@color/colorAccent"
             android:id="@+id/battery"/>
 
 </LinearLayout>

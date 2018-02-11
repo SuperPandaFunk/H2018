@@ -1,7 +1,6 @@
 package polytechnique.wifi_searcher.fragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,24 +10,17 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -36,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -45,22 +38,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import io.realm.Realm;
-import io.realm.RealmObject;
-import io.realm.RealmResults;
-import io.realm.annotations.PrimaryKey;
 import polytechnique.wifi_searcher.R;
+import polytechnique.wifi_searcher.activities.ViewBeaconActivity;
 import polytechnique.wifi_searcher.models.Beacon;
 
 /**
@@ -99,11 +85,7 @@ public class MapFrag extends Fragment {
         @Override
         public void onComplete(Task<Location> task) {
             _LatLng = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-            try {
-                address = geocoder.getFromLocation(_LatLng.latitude,_LatLng.longitude,1).get(0);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            address = getAddress();
         }
 
     };
@@ -113,16 +95,27 @@ public class MapFrag extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             //TODO: Ajouter les marqueurs ici avec l'objet googleMap
             mGoogleMap = googleMap;
-            addAllMArkers();
+            mGoogleMap.setOnMarkerClickListener(onMarkerClickListener);
+            addAllMarkers();
             geocoder = new Geocoder(getContext(), Locale.getDefault());
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
             googleMap.setMyLocationEnabled(true);
             mFusedLocationClient.getLastLocation().addOnSuccessListener(locationSuccess);
 
         }
+    };
+
+    private GoogleMap.OnMarkerClickListener onMarkerClickListener = new GoogleMap.OnMarkerClickListener() {
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            Intent viewBeacon = new Intent(getActivity().getApplicationContext(), ViewBeaconActivity.class);
+            viewBeacon.putExtra("bssid", (String)marker.getTag());
+            startActivity(viewBeacon);
+            return false;
+        }
+
     };
 
     private void centerToLocation(double lat, double lon) {
@@ -143,15 +136,17 @@ public class MapFrag extends Fragment {
     }
 
 
-    private void addAllMArkers()
+    private void addAllMarkers()
     {
-
         List<Beacon> lBeacon = realm.where(Beacon.class).findAll();
         for(int i = 0; i < lBeacon.size();++i)
         {
             if(lBeacon.get(i).getBSSID() != null)
             {
-                Marker m = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lBeacon.get(i).getLatitude(), lBeacon.get(i).getLongitude())));
+                Marker m = mGoogleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(lBeacon.get(i).getLatitude(), lBeacon.get(i).getLongitude()))
+                        .icon(getMarkerColor(lBeacon.get(i))));
+                m.setTag(lBeacon.get(i).getBSSID());
                 markers.put(lBeacon.get(i).getBSSID(), m);
             }
         }
@@ -176,7 +171,7 @@ public class MapFrag extends Fragment {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                if (getActivity().getApplicationContext() != null) {
+                if (getActivity() != null && getActivity().getApplicationContext() != null) {
                     mainWifi = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 if (receiverWifi == null) {
                     receiverWifi = new WifiReceiver();
@@ -268,7 +263,7 @@ public class MapFrag extends Fragment {
                                 if(beaconList.get(j).isStronger(wifiList.get(i).level))
                                 {
                                     realm.beginTransaction();
-                                        beaconList.get(j).changeAddress(address);
+                                    beaconList.get(j).changeAddress(address);
                                     realm.copyToRealmOrUpdate(beaconList.get(j));
                                     realm.commitTransaction();
                                     Marker edit= markers.get( beaconList.get(j).getBSSID());
@@ -276,6 +271,8 @@ public class MapFrag extends Fragment {
                                     if(edit != null)
                                     {
                                         edit.setPosition(_LatLng);
+                                        edit.setIcon(getMarkerColor(beaconList.get(j)));
+                                        edit.setTag(beaconList.get(j).getBSSID());
                                     }
                                 }
                                 asEnter = true;
@@ -286,10 +283,14 @@ public class MapFrag extends Fragment {
                         {
                             realm.beginTransaction();
                             Beacon b = realm.createObject(Beacon.class, wifiList.get(i).BSSID);
+                            address = getAddress();
                             b.setBeacon(wifiList.get(i), address);
                             realm.copyToRealmOrUpdate(b);
                             realm.commitTransaction();
-                            Marker m = mGoogleMap.addMarker(new MarkerOptions().position(_LatLng));
+                            Marker m = mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(_LatLng)
+                                    .icon(getMarkerColor(b)));
+                            m.setTag(b.getBSSID());
                             markers.put(b.getBSSID(), m);
                         }
 
@@ -301,6 +302,7 @@ public class MapFrag extends Fragment {
                     if(result.isStronger(wifiList.get(i).level))
                     {
                         realm.beginTransaction();
+                        address = getAddress();
                         result.changeAddress(address);
                         realm.copyToRealmOrUpdate(result);
                         realm.commitTransaction();
@@ -314,6 +316,19 @@ public class MapFrag extends Fragment {
                 }
                 //realm.commitTransaction();
             }
+        }
+    }
+
+    private BitmapDescriptor getMarkerColor(Beacon b){
+        return b.isPublic() ? BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN) : BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+    }
+
+    private Address getAddress(){
+        try {
+            return geocoder.getFromLocation(_LatLng.latitude,_LatLng.longitude,1).get(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
