@@ -45,10 +45,7 @@ public class ListFrag extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener swipeListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-            allBeacons.clear();
-            allBeacons.addAll(getFakeBeaconData());
-            adapter.notifyDataSetChanged();
-            swipeRefreshLayout.setRefreshing(false);
+        updateView();
         }
     };
 
@@ -58,7 +55,7 @@ public class ListFrag extends Fragment {
         realm = Realm.getDefaultInstance();
         hotSpotList = (ListView)view.findViewById(R.id.hotSpotList);
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe2refresh);
-        allBeacons = getFakeBeaconData();
+        allBeacons = getBeaconData();
         adapter = new BeaconListAdapter(getContext(), allBeacons);
         hotSpotList.setAdapter(adapter);
         hotSpotList.setOnItemClickListener(beaconListener);
@@ -73,12 +70,25 @@ public class ListFrag extends Fragment {
         return view;
     }
 
-    private ArrayList<Beacon> getFakeBeaconData(){
+    private ArrayList<Beacon> getBeaconData(){
         List<Beacon> result = realm.where(Beacon.class).findAll();
 
         ArrayList<Beacon> items = new ArrayList<>();
 
         items.addAll(result);
         return items;
+    }
+
+    private void updateView(){
+        allBeacons.clear();
+        allBeacons.addAll(getBeaconData());
+        adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateView();
     }
 }

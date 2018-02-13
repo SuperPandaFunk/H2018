@@ -41,5 +41,10 @@ public class mapActivity extends AppCompatActivity{
         return null;
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getSupportFragmentManager().findFragmentById(R.id.main_container) instanceof ViewPagerFrag)
+            ((ViewPagerFrag)getSupportFragmentManager().findFragmentById(R.id.main_container)).updateNavBar();
+    }
 }

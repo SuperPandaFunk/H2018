@@ -72,4 +72,11 @@ public class ViewPagerFrag extends Fragment {
     public ViewPager getViewPager(){
         return viewPager;
     }
+
+    public void updateNavBar(){
+        ((NavigationBarFrag)getActivity().getSupportFragmentManager().findFragmentById(R.id.navigationBarContainer)).changeColor(viewPager.getCurrentItem());
+        if (viewPager.getCurrentItem() == LIST_FRAG){
+
+        }
+    }
 }
