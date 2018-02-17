@@ -115,6 +115,10 @@ public class Beacon extends RealmObject {
         return l;
     }
 
+    public String getPositionString(){
+        return Double.toString(_latitude) + "," + Double.toString(_longitude);
+    }
+
     public void toggleFavorite(){
         _Favorite = !_Favorite;
     }

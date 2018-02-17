@@ -158,7 +158,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:gravity="center_horizontal">
 
         <ImageButton
             android:layout_width="75dp"
@@ -181,6 +182,17 @@
             android:scaleType="centerInside"
             android:tint="@color/white"
             android:id="@+id/direction"/>
+
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/start_button_background"
+            android:src="@drawable/share"
+            android:scaleType="centerInside"
+            android:tint="@color/white"
+            android:id="@+id/share"/>
 
     </LinearLayout>
 

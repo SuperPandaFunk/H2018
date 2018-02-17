@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import polytechnique.wifi_searcher.R;
 import polytechnique.wifi_searcher.fragments.NavigationBarFrag;
 import polytechnique.wifi_searcher.fragments.ViewPagerFrag;
+import polytechnique.wifi_searcher.manager.EnergyManager;
 
 /**
  * Created by Vincent on 2018-01-19.
@@ -46,5 +47,18 @@ public class mapActivity extends AppCompatActivity{
         super.onResume();
         if (getSupportFragmentManager().findFragmentById(R.id.main_container) instanceof ViewPagerFrag)
             ((ViewPagerFrag)getSupportFragmentManager().findFragmentById(R.id.main_container)).updateNavBar();
+        EnergyManager.getInstance().StartCounting(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EnergyManager.getInstance().StopCounting(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EnergyManager.getInstance().StopCounting(this);
     }
 }

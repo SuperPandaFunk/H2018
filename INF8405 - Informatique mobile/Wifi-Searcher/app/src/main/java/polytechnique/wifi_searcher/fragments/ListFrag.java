@@ -45,7 +45,7 @@ public class ListFrag extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener swipeListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-        updateView();
+            updateView();
         }
     };
 
