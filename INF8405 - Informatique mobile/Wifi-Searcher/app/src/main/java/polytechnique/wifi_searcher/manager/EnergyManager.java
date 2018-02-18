@@ -20,7 +20,11 @@ public class EnergyManager {
     private boolean counting;
 
     private EnergyManager(){
-        resetAllValues();
+        totalEnergyConsumed = 0;
+        startEnergy = 0;
+        endEnergy = 0;
+        totalTime = 0;
+        startTime = 0;
         counting = false;
     }
 
@@ -47,6 +51,8 @@ public class EnergyManager {
             return;
         }
         startTime = Calendar.getInstance().getTimeInMillis();
+        totalTime = SharedPreferenceManager.getTotalTime(mContext);
+        totalEnergyConsumed = SharedPreferenceManager.getTotalEnergy(mContext);
     }
 
     public void StopCounting(Context mContext){
@@ -68,6 +74,9 @@ public class EnergyManager {
         else
             totalEnergyConsumed = 0;
         totalTime += Calendar.getInstance().getTimeInMillis() - startTime;
+        SharedPreferenceManager.setTotalEnergy(mContext, totalEnergyConsumed);
+        SharedPreferenceManager.setTotalTime(mContext, totalTime);
+
         startEnergy = 0;
         endEnergy = 0;
         counting = false;
@@ -89,12 +98,20 @@ public class EnergyManager {
         return (Calendar.getInstance().getTimeInMillis() - startTime) + totalTime;
     }
 
-    public void resetAllValues(){
+    public int getBatteryLevel(Context mContext){
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = mContext.registerReceiver(null, ifilter);
+        return batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+    }
+
+    public void resetAllValues(Context mContext){
         totalEnergyConsumed = 0;
-        startEnergy = 0;
+        startEnergy = getBatteryLevel(mContext);
         endEnergy = 0;
         totalTime = 0;
-        startTime = 0;
+        startTime = Calendar.getInstance().getTimeInMillis();
+        SharedPreferenceManager.setTotalEnergy(mContext, 0);
+        SharedPreferenceManager.setTotalTime(mContext, 0);
     }
 
 }
