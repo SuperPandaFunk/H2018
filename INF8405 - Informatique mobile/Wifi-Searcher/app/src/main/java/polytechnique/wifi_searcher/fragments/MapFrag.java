@@ -84,6 +84,8 @@ public class MapFrag extends Fragment {
     OnCompleteListener locationComplete = new OnCompleteListener<Location>() {
         @Override
         public void onComplete(Task<Location> task) {
+            if (task.getResult() == null)
+                return;
             _LatLng = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
             address = getAddress();
         }
