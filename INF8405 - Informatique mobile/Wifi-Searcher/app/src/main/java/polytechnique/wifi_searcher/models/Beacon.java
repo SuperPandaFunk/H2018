@@ -26,10 +26,6 @@ public class Beacon extends RealmObject {
     private double _longitude;
     private double _latitude;
     private boolean _Favorite;
-
-    //private LatLng _location;
-
-    //private Address _addresse;
     private boolean _isPublic;
 
 
