@@ -84,6 +84,8 @@ public class MapFrag extends Fragment {
     OnCompleteListener locationComplete = new OnCompleteListener<Location>() {
         @Override
         public void onComplete(Task<Location> task) {
+            if (task.getResult() == null)
+                return;
             _LatLng = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
             address = getAddress();
         }
@@ -258,7 +260,7 @@ public class MapFrag extends Fragment {
                         List<Beacon> beaconList = realm.where(Beacon.class).equalTo("_SSID",wifiList.get(i).SSID).findAll();
                         for(int j = 0; j < beaconList.size() && !asEnter; ++j)
                         {
-                            if(isnear(beaconList.get(j).getLocation()))
+                            if(_LatLng != null && isnear(beaconList.get(j).getLocation()))
                             {
                                 if(beaconList.get(j).isStronger(wifiList.get(i).level))
                                 {
@@ -283,9 +285,11 @@ public class MapFrag extends Fragment {
 
                         if(!asEnter)
                         {
+                            address = getAddress();
+                            if (address == null)
+                                continue;
                             realm.beginTransaction();
                             Beacon b = realm.createObject(Beacon.class, wifiList.get(i).BSSID);
-                            address = getAddress();
                             b.setBeacon(wifiList.get(i), address);
                             realm.copyToRealmOrUpdate(b);
                             realm.commitTransaction();
@@ -303,8 +307,10 @@ public class MapFrag extends Fragment {
                 {
                     if(result.isStronger(wifiList.get(i).level))
                     {
-                        realm.beginTransaction();
                         address = getAddress();
+                        if (address == null)
+                            continue;
+                        realm.beginTransaction();
                         result.changeAddress(address);
                         realm.copyToRealmOrUpdate(result);
                         realm.commitTransaction();
@@ -316,7 +322,6 @@ public class MapFrag extends Fragment {
                         }
                     }
                 }
-                //realm.commitTransaction();
             }
         }
     }
@@ -329,6 +334,9 @@ public class MapFrag extends Fragment {
         try {
             return geocoder.getFromLocation(_LatLng.latitude,_LatLng.longitude,1).get(0);
         } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NullPointerException e){
             e.printStackTrace();
             return null;
         }
