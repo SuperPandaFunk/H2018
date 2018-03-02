@@ -1,0 +1,4 @@
+0 = 4124
+1 = 4068
+Nombre total de bits : 8192
+Entropie du texte entre : 0.999966

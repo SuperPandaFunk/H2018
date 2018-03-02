@@ -1,2 +1,0 @@
-Nombre total d'octets : 1024
-Entropie de l'entree : 0.778828
