@@ -120,9 +120,9 @@ def setBet(bet):
     mousePos(dic['enter'])
     #leftClick()
 
-def sendEmail(goodBad, emailBody):
+def sendEmail(goodBad, emailBody, emailAddress):
     fromaddr = "wtfskinbot@gmail.com"
-    toaddr = "vincent.rodier.v@gmail.com"
+    toaddr = emailAddress
     msg = MIMEMultipart()
     msg['From'] = fromaddr
     msg['To'] = toaddr
@@ -178,7 +178,8 @@ def play():
             sellskin()
             time.sleep(4.5)
             setBet(toBet)
-    sendEmail('Bad', 'You lost all your money :\'(')
+    sendEmail('Bad', 'You lost all your money :\'(', "vincent.rodier.v@gmail.com")
+    sendEmail('Bad', 'You lost all your money :\'(', "etienne.asselin.polymtl@gmail.com")
 
 def setUpValues():
     global dic
