@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Toursita</string>
+    <string name="facebook_app_id">182998915827691</string>
+    <string name="applicationToken">app_token</string>
+    <string name="userId">userID</string>
+    <string name="connect_cancel">Connexion annule par utilisateur</string>
+    <string name="connect_error">Une erreur c\'est produite lors de la connexion</string>
+    <string name="lastName">last_name</string>
+    <string name="firstName">first_name</string>
+</resources>
