@@ -17,10 +17,19 @@ const locationSchema = mongoose.Schema({
         },
         description:{
             type: String
-        }
-
-        // add the user who create 
-        //add array of coments
+        },
+        postedBy:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        Comments:
+        [{
+            text: String,
+            postedBy:{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        }]
 });
 
 const Location = module.exports = mongoose.model('Location',locationSchema);
@@ -29,13 +38,12 @@ const Location = module.exports = mongoose.model('Location',locationSchema);
 
 module.exports.getLocations = (callback, limit) =>
 {
-    Location.find(callback).limit(limit);
+    Location.find(callback).populate('postedBy').populate('Comments.postedBy').limit(limit);
 }
 
 
 // Add locations
 
-module.exports.addLocations = (loc, callback) => {
-    
+module.exports.addLocations = (loc, callback) => {   
     Location.create(loc, callback);
 }
