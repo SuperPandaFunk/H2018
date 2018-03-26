@@ -3,9 +3,14 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Location = require('./models/locations');
 const User = require('./models/users');
+var busboy = require('connect-busboy'); //middleware for form/file upload
+var path = require('path');     //used for file path
+var fs = require('fs-extra');       //File System - for file manipulation
 const app = express();
-
+app.use(busboy());
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
+
 // Connect to Mongoose
 mongoose.connect('mongodb://localhost/tourista');
 const db = mongoose.connection;
@@ -38,6 +43,23 @@ app.post('/api/locations', (req, res) => {
             throw err;
         }
         res.json(loc);
+    });
+});
+
+app.post('/api/locations/image/:_locationId', (req, res, next) => {
+    var fstream;
+    
+    req.pipe(req.busboy);
+    req.busboy.on('file', function (fieldname, file, filename) {
+        console.log("Uploading: " + filename);
+
+        //Path where image will be uploaded
+        fstream = fs.createWriteStream(__dirname + '/img/' + filename);
+        file.pipe(fstream);
+        fstream.on('close', function () {
+            console.log("Upload Finished of " + filename);
+        });
+        res.json(req.params._locationId);
     });
 });
 

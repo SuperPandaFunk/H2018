@@ -11,7 +11,7 @@ const locationSchema = mongoose.Schema({
             type: Number,
             require: true
         },
-        adress:{
+        address:{
             type: String,
             require: true
         },
@@ -25,6 +25,16 @@ const locationSchema = mongoose.Schema({
         Comments:
         [{
             text: String,
+            postedBy:{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        }],
+        Images:[{
+            img:{
+                data: Buffer,
+                contentType: String
+            },
             postedBy:{
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User'

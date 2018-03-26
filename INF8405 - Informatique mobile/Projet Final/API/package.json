@@ -7,8 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "*",
     "body-parser": "*",
+    "connect-busboy": "0.0.2",
+    "express": "*",
+    "fs-extra": "^5.0.0",
     "mongoose": "*"
   },
   "author": "Etienne Asselin & Vincent Rodier",
