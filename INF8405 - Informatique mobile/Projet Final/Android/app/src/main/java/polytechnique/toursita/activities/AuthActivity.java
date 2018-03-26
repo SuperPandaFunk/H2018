@@ -62,7 +62,6 @@ public class AuthActivity extends AppCompatActivity {
                         }
                     });
             request.executeAsync();
-            Toast.makeText(getApplicationContext(), SharedPreferenceManager.getName(getApplicationContext()), Toast.LENGTH_LONG).show();
             SharedPreferenceManager.setToken(AccessToken.getCurrentAccessToken().getToken(), AccessToken.getCurrentAccessToken().getUserId(), getApplicationContext());
             Intent intent = new Intent(getApplicationContext(), MapActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

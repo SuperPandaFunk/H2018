@@ -20,9 +20,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import polytechnique.toursita.R;
 
@@ -36,6 +34,33 @@ public class MapFrag extends Fragment{
     private MapView mMapView;
     private GoogleMap mGoogleMap;
     private FusedLocationProviderClient mFusedLocationClient;
+
+    View.OnClickListener otherListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            myExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
+            nearExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
+            othersExperience.setBackgroundResource(R.drawable.round_corners_button_cyan);
+        }
+    };
+
+    View.OnClickListener meListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            myExperience.setBackgroundResource(R.drawable.round_corners_button_cyan);
+            nearExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
+            othersExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
+        }
+    };
+
+    View.OnClickListener nearListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            myExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
+            nearExperience.setBackgroundResource(R.drawable.round_corners_button_cyan);
+            othersExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
+        }
+    };
 
     OnSuccessListener locationSuccess = new OnSuccessListener<Location>() {
         @Override
@@ -71,10 +96,19 @@ public class MapFrag extends Fragment{
         mMapView = view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
+        mMapView.getMapAsync(onMapReadyCallback);
+
         othersExperience = view.findViewById(R.id.othersExperience);
         myExperience = view.findViewById(R.id.myExperience);
         nearExperience = view.findViewById(R.id.nearExperience);
-        mMapView.getMapAsync(onMapReadyCallback);
+
+        othersExperience.setOnClickListener(otherListener);
+        myExperience.setOnClickListener(meListener);
+        nearExperience.setOnClickListener(nearListener);
+
+        othersExperience.setBackgroundResource(R.drawable.round_corners_button_cyan);
+        myExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
+        nearExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
     }
 
     private void centerToLocation(double lat, double lon) {

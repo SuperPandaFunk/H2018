@@ -38,4 +38,14 @@ public class SharedPreferenceManager {
         return sharedPreferences.getString(context.getString(R.string.firstName),"") + " " + sharedPreferences.getString(context.getString(R.string.lastName),"");
     }
 
+    public static String getFirstName(Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getString(context.getString(R.string.firstName),"");
+    }
+
+    public static String getLastName(Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getString(context.getString(R.string.lastName),"");
+    }
+
 }
