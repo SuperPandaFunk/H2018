@@ -16,11 +16,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class WebService {
-    public static final String BASE_URL = "";
+    public static final String BASE_URL = "http://10.200.0.232:3000/";
 
     private final API mService;
 
-    private WebService(){
+    public WebService(){
         Gson gson = new GsonBuilder()
                 .create();
 
@@ -40,8 +40,12 @@ public class WebService {
         mService = retrofit.create(API.class);
     }
 
-    public Call<BaseResponse> registerFacebook(String token) {
-        return mService.registerFacebook(token);
+    public Call<RegisterResponse> registerFacebook(String token, String firstName, String lastName) {
+        return mService.registerFacebook(token, firstName, lastName);
+    }
+
+    public Call<RegisterResponse> getUser(String facebookId){
+        return mService.getUser(facebookId);
     }
 
 }

@@ -15,6 +15,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Connect to Mongoose
 mongoose.connect('mongodb://localhost/tourista');
 const db = mongoose.connection;
+app.get('/', (req,res) =>{
+    res.json("success")
+});
 
 app.get('/api/locations', (req,res) =>{
     Location.getLocations(function(err, locations){
