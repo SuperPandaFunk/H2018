@@ -10,6 +10,7 @@ const app = express();
 app.use(busboy());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Connect to Mongoose
 mongoose.connect('mongodb://localhost/tourista');
@@ -46,6 +47,17 @@ app.post('/api/locations', (req, res) => {
     });
 });
 
+app.post('/api/locations/comment/:_locationId', (req, res) => {
+    var loc = req.params._locationId;
+    var message = req.body
+    Location.addComment(loc,message,function (err, locations) {
+        if (err) {
+            throw err;
+        }
+        res.json(locations);
+    });
+});
+
 app.post('/api/locations/image/:_locationId', (req, res, next) => {
     var fstream;
     
@@ -59,7 +71,14 @@ app.post('/api/locations/image/:_locationId', (req, res, next) => {
         fstream.on('close', function () {
             console.log("Upload Finished of " + filename);
         });
-        res.json(req.params._locationId);
+        var pathToimg = __dirname + '/img/' + filename;
+        var loc = req.params._locationId;
+        Location.addImage(loc,pathToimg,function (err, locations) {
+            if (err) {
+                throw err;
+            }
+            res.json(locations);
+        });
     });
 });
 
