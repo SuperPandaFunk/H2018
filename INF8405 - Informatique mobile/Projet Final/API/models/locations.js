@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-var fs = require('fs');
 
 const locationSchema = mongoose.Schema({
         lat: 
@@ -39,6 +38,7 @@ const locationSchema = mongoose.Schema({
         }]
 });
 
+
 const Location = module.exports = mongoose.model('Location',locationSchema);
 
 // Get locations
@@ -59,10 +59,8 @@ module.exports.addComment = (loc, message, callback) => {
     Location.findByIdAndUpdate(loc,{$push:{Comments:message}},callback);
 }
 
-
 module.exports.addImage = (loc, image, callback) => {
- /*  var a = location.Images;
-    a[0].img.data = fs.readFileSync(image);
-    a[0].img.contentType = 'image/png';
-    Location.findByIdAndUpdate(loc,{$push:{Images:a}},callback);*/
+   
+
+    //Location.findByIdAndUpdate(loc,{$push:{Images:a}},callback);
 }

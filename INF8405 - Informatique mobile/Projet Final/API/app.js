@@ -3,9 +3,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Location = require('./models/locations');
 const User = require('./models/users');
+
 var busboy = require('connect-busboy'); //middleware for form/file upload
 var path = require('path');     //used for file path
 var fs = require('fs-extra');       //File System - for file manipulation
+
 const app = express();
 app.use(busboy());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -15,6 +17,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Connect to Mongoose
 mongoose.connect('mongodb://localhost/tourista');
 const db = mongoose.connection;
+
+
+
 app.get('/', (req,res) =>{
     res.json("success")
 });
@@ -69,19 +74,29 @@ app.post('/api/locations/image/:_locationId', (req, res, next) => {
         console.log("Uploading: " + filename);
 
         //Path where image will be uploaded
-        fstream = fs.createWriteStream(__dirname + '/img/' + filename);
+        fstream = fs.createWriteStream(__dirname + '/img/'+ req.params._locationId + filename);
         file.pipe(fstream);
         fstream.on('close', function () {
-            console.log("Upload Finished of " + filename);
+            console.log("Upload Finished of " + req.params._locationId + filename);
         });
-        var pathToimg = __dirname + '/img/' + filename;
+        var pathToimg = __dirname + '/img/' + req.params._locationId + filename;
         var loc = req.params._locationId;
-        Location.addImage(loc,pathToimg,function (err, locations) {
-            if (err) {
-                throw err;
-            }
-            res.json(locations);
+        fstream.on('close', function () {
+            var a = {
+                img:{
+                data: Buffer,
+                contentType: String
+            }}
+
+            a.img.data = fs.readFileSync(pathToimg);
+            a.img.contentType = 'image/png';
+            
+            
+            Location.findByIdAndUpdate({_id:loc},{$push:{Images:a}},function(err,response){ 
+                res.send(response);
+            })
         });
+        
     });
 });
 
