@@ -96,6 +96,7 @@ public class AddExperienceActivity extends AppCompatActivity {
             String address = strAddress.getText().toString() + ", " + city.getText().toString();
             LatLng result = getLocationFromAddress(getApplicationContext(), address);
             if (result != null){
+                closeKeyboard();
                 if (mapLayout.getVisibility() != View.VISIBLE){
                     mapLayout.setVisibility(View.VISIBLE);
                 }
@@ -139,9 +140,6 @@ public class AddExperienceActivity extends AppCompatActivity {
         confirm.setOnClickListener(confirmExperienceListener);
         backArrow.setOnClickListener(backArrowListener);
         viewMapButton.setOnClickListener(lookOnMapListener);
-
-        strAddress.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        city.setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
     public LatLng getLocationFromAddress(Context context, String strAddress) {

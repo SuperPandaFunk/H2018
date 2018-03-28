@@ -65,7 +65,7 @@
                 android:padding="10dp"
                 android:id="@+id/city"
                 android:maxLines="1"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:inputType="text"/>
 
             <EditText
