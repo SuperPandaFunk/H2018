@@ -14,6 +14,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.set('port', (process.env.PORT || 3000));
 // Connect to Mongoose
 mongoose.connect('mongodb://localhost/tourista');
 const db = mongoose.connection;
@@ -151,5 +152,5 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
-app.listen(3000);
-console.log('Running on port 3000');
+app.listen(app.get('port'));
+console.log(`Running on port ${app.get('port')}`);
