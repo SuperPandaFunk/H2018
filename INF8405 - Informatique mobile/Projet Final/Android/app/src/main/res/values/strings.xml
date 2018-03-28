@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Toursita</string>
+    <string name="app_name">Tourista</string>
     <string name="facebook_app_id">182998915827691</string>
     <string name="applicationToken">app_token</string>
     <string name="userId">userID</string>

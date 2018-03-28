@@ -8,13 +8,21 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,14 +39,26 @@ import retrofit2.Response;
 public class AddExperienceActivity extends AppCompatActivity {
 
     private EditText strAddress, city, description;
-    private Button confirm;
+    private Button confirm, viewMapButton;
     private ImageView backArrow;
     private WebService webService;
+    private MapView mMapView;
+    private GoogleMap mGoogleMap;
+    private LinearLayout mapLayout;
+    private Marker marker;
+
+    private OnMapReadyCallback onMapReadyCallback = new OnMapReadyCallback() {
+        @Override
+        public void onMapReady(GoogleMap googleMap) {
+            mGoogleMap = googleMap;
+        }
+    };
 
     Callback<LocationResponse> addLocationCallback = new Callback<LocationResponse>() {
         @Override
         public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
             Toast.makeText(getApplicationContext(), "Upload reussi!", Toast.LENGTH_LONG).show();
+            closeKeyboard();
             onBackPressed();
         }
 
@@ -63,13 +83,33 @@ public class AddExperienceActivity extends AppCompatActivity {
             }else{
                 Toast.makeText(getApplicationContext(), "L'addresse entrer n'est pas valide!", Toast.LENGTH_LONG).show();
             }
+        }
+    };
 
+    View.OnClickListener lookOnMapListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (strAddress.getText().toString().matches("") || city.getText().toString().matches("")){
+                Toast.makeText(getApplicationContext(), "Veuillez remplir tous les champs!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            String address = strAddress.getText().toString() + ", " + city.getText().toString();
+            LatLng result = getLocationFromAddress(getApplicationContext(), address);
+            if (result != null){
+                if (mapLayout.getVisibility() != View.VISIBLE){
+                    mapLayout.setVisibility(View.VISIBLE);
+                }
+                centerToLocation(result);
+            }else{
+                Toast.makeText(getApplicationContext(), "L'addresse entrer n'est pas valide!", Toast.LENGTH_LONG).show();
+            }
         }
     };
 
     View.OnClickListener backArrowListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            closeKeyboard();
             onBackPressed();
         }
     };
@@ -78,19 +118,30 @@ public class AddExperienceActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_experience_layout);
-        initializeView();
+        initializeView(savedInstanceState);
         webService = new WebService();
     }
 
-    private void initializeView(){
+    private void initializeView(Bundle savedInstanceState){
         strAddress = findViewById(R.id.address);
         city = findViewById(R.id.city);
         description = findViewById(R.id.description);
         confirm = findViewById(R.id.confirmExperience);
         backArrow = findViewById(R.id.backArrow);
+        mMapView = findViewById(R.id.mapView);
+        mapLayout = findViewById(R.id.mapContainer);
+        viewMapButton = findViewById(R.id.viewOnMap);
+
+        mMapView.onCreate(savedInstanceState);
+        mMapView.onResume();
+        mMapView.getMapAsync(onMapReadyCallback);
 
         confirm.setOnClickListener(confirmExperienceListener);
         backArrow.setOnClickListener(backArrowListener);
+        viewMapButton.setOnClickListener(lookOnMapListener);
+
+        strAddress.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+        city.setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
     public LatLng getLocationFromAddress(Context context, String strAddress) {
@@ -138,4 +189,24 @@ public class AddExperienceActivity extends AppCompatActivity {
         return strAdd;
     }
 
+    protected void closeKeyboard(){
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private void centerToLocation(LatLng position) {
+        LatLng latlong = new LatLng(position.latitude, position.longitude);
+        addMarker(position);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15));
+    }
+
+    private void addMarker(LatLng position){
+        if (marker != null)
+            marker.remove();
+        marker = mGoogleMap.addMarker(new MarkerOptions()
+                .position(position));
+    }
 }
