@@ -16,7 +16,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('port', (process.env.PORT || 3000));
 // Connect to Mongoose
-mongoose.connect('mongodb://localhost/tourista');
+var options = {
+    server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
+    replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }
+};    
+var mongodbUri = 'mongodb://SuperPandaFunk:zaq1xsw2@ds125469.mlab.com:25469/tourista';
+mongoose.connect(mongodbUri, options);
 const db = mongoose.connection;
 
 
