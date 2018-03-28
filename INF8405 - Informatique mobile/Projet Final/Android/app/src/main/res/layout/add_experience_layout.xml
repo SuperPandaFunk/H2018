@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/back_arrow"
+        android:tint="@color/orang"
+        android:layout_marginTop="5dp"
+        android:id="@+id/backArrow"
+        android:nextFocusDown="@id/city"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/silver_outline"
+        android:hint="Adresse de la nouvelle experience"
+        android:padding="10dp"
+        android:id="@+id/address"
+        android:maxLines="1"
+        android:nextFocusDown="@id/description"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/silver_outline"
+        android:hint="Ville de la nouvelle experience"
+        android:padding="10dp"
+        android:id="@+id/city"
+        android:maxLines="1"
+        android:imeOptions="actionDone"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:background="@drawable/silver_outline"
+        android:hint="Description"
+        android:lines="4"
+        android:maxLines="6"
+        android:id="@+id/description"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/round_corners_button_orang"
+        android:text="Ajouter cette endroit!"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:id="@+id/confirmExperience"/>
+
+</LinearLayout>

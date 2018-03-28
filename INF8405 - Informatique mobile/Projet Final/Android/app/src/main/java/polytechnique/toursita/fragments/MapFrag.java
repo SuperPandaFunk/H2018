@@ -1,17 +1,21 @@
 package polytechnique.toursita.fragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -23,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import polytechnique.toursita.R;
+import polytechnique.toursita.activities.AddExperienceActivity;
 
 /**
  * Created by Vincent on 2018-03-25.
@@ -30,35 +35,17 @@ import polytechnique.toursita.R;
 
 public class MapFrag extends Fragment{
 
-    private Button othersExperience, myExperience, nearExperience;
+    private Button addExperience, refineSearch;
+    private EditText distance;
     private MapView mMapView;
     private GoogleMap mGoogleMap;
     private FusedLocationProviderClient mFusedLocationClient;
 
-    View.OnClickListener otherListener = new View.OnClickListener() {
+    View.OnClickListener addExperienceListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            myExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
-            nearExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
-            othersExperience.setBackgroundResource(R.drawable.round_corners_button_cyan);
-        }
-    };
-
-    View.OnClickListener meListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            myExperience.setBackgroundResource(R.drawable.round_corners_button_cyan);
-            nearExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
-            othersExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
-        }
-    };
-
-    View.OnClickListener nearListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            myExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
-            nearExperience.setBackgroundResource(R.drawable.round_corners_button_cyan);
-            othersExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
+            Intent intent = new Intent(getActivity(), AddExperienceActivity.class);
+            startActivity(intent);
         }
     };
 
@@ -98,17 +85,11 @@ public class MapFrag extends Fragment{
         mMapView.onResume();
         mMapView.getMapAsync(onMapReadyCallback);
 
-        othersExperience = view.findViewById(R.id.othersExperience);
-        myExperience = view.findViewById(R.id.myExperience);
-        nearExperience = view.findViewById(R.id.nearExperience);
+        addExperience = view.findViewById(R.id.ajouteExperience);
+        refineSearch = view.findViewById(R.id.refineSearch);
+        distance = view.findViewById(R.id.distance);
 
-        othersExperience.setOnClickListener(otherListener);
-        myExperience.setOnClickListener(meListener);
-        nearExperience.setOnClickListener(nearListener);
-
-        othersExperience.setBackgroundResource(R.drawable.round_corners_button_cyan);
-        myExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
-        nearExperience.setBackgroundResource(R.drawable.round_corners_button_orang);
+        addExperience.setOnClickListener(addExperienceListener);
     }
 
     private void centerToLocation(double lat, double lon) {

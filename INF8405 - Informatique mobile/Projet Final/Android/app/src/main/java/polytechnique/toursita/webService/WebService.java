@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class WebService {
-    public static final String BASE_URL = "http://10.200.0.232:3000/";
+    public static final String BASE_URL = "https://api-tourista.herokuapp.com/";
 
     private final API mService;
 
@@ -46,6 +46,14 @@ public class WebService {
 
     public Call<RegisterResponse> getUser(String facebookId){
         return mService.getUser(facebookId);
+    }
+
+    public Call<LocationResponse> createLocation(double lat, double lon, String address, String description, String postedBy ){
+        return mService.createLocation(lat, lon, address, description, postedBy);
+    }
+
+    public Call<LocationResponse[]> getNearLocations(int distance, double lat, double lon){
+        return mService.getNearLocations(distance, lat, lon);
     }
 
 }

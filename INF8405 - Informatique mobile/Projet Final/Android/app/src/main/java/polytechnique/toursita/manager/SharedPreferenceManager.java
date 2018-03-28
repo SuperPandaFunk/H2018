@@ -25,6 +25,11 @@ public class SharedPreferenceManager {
         return sharedPreferences.getString(context.getString(R.string.applicationToken),"");
     }
 
+    public static String getUserId(Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getString(context.getString(R.string.userId),"");
+    }
+
     public static void setName(String firstName, String lastName, Context context){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();

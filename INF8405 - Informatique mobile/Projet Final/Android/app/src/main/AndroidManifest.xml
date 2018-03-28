@@ -37,11 +37,18 @@
 
         <activity android:name=".activities.MapActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
 
         <activity android:name=".activities.OptionActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <activity android:name=".activities.AddExperienceActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
 
     </application>
 </manifest>

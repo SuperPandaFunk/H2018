@@ -22,38 +22,68 @@
         android:layout_height="0dp"
         android:layout_weight="2"
         android:weightSum="3"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:text="Experiences d'autres personnes"
+            android:text="Ajouter un endroit a visiter"
             android:background="@drawable/round_corners_button_orang"
             android:textColor="@color/white"
-            android:id="@+id/othersExperience"/>
+            android:id="@+id/ajouteExperience"/>
 
-        <Button
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:text="Mes experiences"
-            android:background="@drawable/round_corners_button_orang"
-            android:textColor="@color/white"
-            android:id="@+id/myExperience"/>
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Afficher attraction a moins de:"
+                android:layout_centerVertical="true"
+                android:id="@+id/distanceText"
+                android:layout_marginStart="10dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/distanceText"
+                android:background="@drawable/silver_outline"
+                android:layout_centerVertical="true"
+                android:text="5"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingTop="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="10dp"
+                android:id="@+id/distance"
+                android:inputType="number"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/distance"
+                android:layout_centerVertical="true"
+                android:text="Km"/>
+
+        </RelativeLayout>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:text="Experiences pres de moi"
+            android:text="Go"
             android:background="@drawable/round_corners_button_orang"
             android:textColor="@color/white"
-            android:id="@+id/nearExperience"/>
+            android:id="@+id/refineSearch"/>
 
     </LinearLayout>
 
