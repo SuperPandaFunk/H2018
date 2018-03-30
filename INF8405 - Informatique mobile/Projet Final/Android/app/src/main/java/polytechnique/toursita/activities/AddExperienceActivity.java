@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,7 +29,7 @@ import java.util.Locale;
 
 import polytechnique.toursita.R;
 import polytechnique.toursita.manager.SharedPreferenceManager;
-import polytechnique.toursita.webService.LocationResponse;
+import polytechnique.toursita.webService.LocationCreationResponse;
 import polytechnique.toursita.webService.WebService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,16 +53,16 @@ public class AddExperienceActivity extends AppCompatActivity {
         }
     };
 
-    Callback<LocationResponse> addLocationCallback = new Callback<LocationResponse>() {
+    Callback<LocationCreationResponse> addLocationCallback = new Callback<LocationCreationResponse>() {
         @Override
-        public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
+        public void onResponse(Call<LocationCreationResponse> call, Response<LocationCreationResponse> response) {
             Toast.makeText(getApplicationContext(), "Upload reussi!", Toast.LENGTH_LONG).show();
             closeKeyboard();
             onBackPressed();
         }
 
         @Override
-        public void onFailure(Call<LocationResponse> call, Throwable t) {
+        public void onFailure(Call<LocationCreationResponse> call, Throwable t) {
             Toast.makeText(getApplicationContext(), "Un probleme avec le serveur a ete rencontrer", Toast.LENGTH_LONG).show();
         }
     };

@@ -117,7 +117,6 @@ public class MapFrag extends Fragment {
             startActivity(viewBeacon);
             return false;
         }
-
     };
 
     private void centerToLocation(double lat, double lon) {

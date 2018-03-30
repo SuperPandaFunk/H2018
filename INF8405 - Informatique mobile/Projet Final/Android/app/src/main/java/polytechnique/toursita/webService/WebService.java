@@ -1,10 +1,12 @@
 package polytechnique.toursita.webService;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -48,12 +50,24 @@ public class WebService {
         return mService.getUser(facebookId);
     }
 
-    public Call<LocationResponse> createLocation(double lat, double lon, String address, String description, String postedBy ){
+    public Call<LocationCreationResponse> createLocation(double lat, double lon, String address, String description, String postedBy ){
         return mService.createLocation(lat, lon, address, description, postedBy);
     }
 
-    public Call<LocationResponse[]> getNearLocations(int distance, double lat, double lon){
-        return mService.getNearLocations(distance, lat, lon);
+    public Call<LocationRequestResponse[]> getNearLocations(int distance, LatLng pos){
+        return mService.getNearLocations(distance, pos.latitude, pos.longitude);
+    }
+
+    public Call<LocationRequestResponse> getLocationId(String id){
+        return mService.getLocationId(id);
+    }
+
+    public Call<AddCommentResponse> addComment(String placeId, String posterId, String text ){
+        return mService.addComment(placeId, posterId, text);
+    }
+
+    public Call<ImageUploadResult> addImage(String id, MultipartBody.Part img){
+        return mService.addImage(id, img);
     }
 
 }

@@ -43,6 +43,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
     private WebService webService;
+    private LoginButton loginButton;
 
     Callback<RegisterResponse> isUserExist = new Callback<RegisterResponse>() {
         @Override
@@ -58,6 +59,7 @@ public class AuthActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Call<RegisterResponse> call, Throwable t) {
+            loginButton.setEnabled(true);
             Toast.makeText(getApplicationContext(), "Une erreur c\'est produite lors de la requete au serveur", Toast.LENGTH_LONG).show();
         }
     };
@@ -70,6 +72,7 @@ public class AuthActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Call<RegisterResponse> call, Throwable t) {
+            loginButton.setEnabled(true);
             Toast.makeText(getApplicationContext(), "Une erreur c\'est produite lors de la requete au serveur", Toast.LENGTH_LONG).show();
         }
     };
@@ -94,7 +97,8 @@ public class AuthActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.auth_layout);
         webService = new WebService();
-        LoginButton loginButton = findViewById(R.id.fbLoginButton);
+        loginButton = findViewById(R.id.fbLoginButton);
+        loginButton.setEnabled(true);
         loginButton.setReadPermissions(Arrays.asList("public_profile"));
 
         loginButton.registerCallback(callbackManager, fbCallBack);
@@ -103,6 +107,7 @@ public class AuthActivity extends AppCompatActivity {
     private FacebookCallback<LoginResult> fbCallBack = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(final LoginResult loginResult) {
+            loginButton.setEnabled(false);
             GraphRequest request = GraphRequest.newMeRequest(
                     AccessToken.getCurrentAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
@@ -119,12 +124,14 @@ public class AuthActivity extends AppCompatActivity {
         }
         @Override
         public void onCancel() {
+            loginButton.setEnabled(true);
             SharedPreferenceManager.setToken("", "1", getApplicationContext());
             Toast.makeText(getApplicationContext(), R.string.connect_cancel, Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onError(FacebookException error) {
+            loginButton.setEnabled(true);
             SharedPreferenceManager.setToken("", "1", getApplicationContext());
             Toast.makeText(getApplicationContext(), R.string.connect_error, Toast.LENGTH_LONG).show();
         }

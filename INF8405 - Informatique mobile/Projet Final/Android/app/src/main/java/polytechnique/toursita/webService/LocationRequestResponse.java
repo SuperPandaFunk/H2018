@@ -1,32 +1,29 @@
 package polytechnique.toursita.webService;
 
-import android.graphics.Bitmap;
-
 import com.google.gson.annotations.SerializedName;
 
-public class LocationResponse {
+public class LocationRequestResponse {
+    @SerializedName("Comments")
+    public Comment[] comments;
+
+    @SerializedName("Images")
+    public ImageData[] images;
 
     @SerializedName("_id")
     public String _id;
 
+    @SerializedName("postedBy")
+    public User postedBy;
+
     @SerializedName("lat")
-    public String lat;
+    public double lat;
 
     @SerializedName("lon")
-    public String lon;
+    public double lon;
 
     @SerializedName("address")
     public String address;
 
     @SerializedName("description")
     public String description;
-
-    @SerializedName("postedBy")
-    public String postedBy;
-
-    @SerializedName("Comments")
-    public String[] comments;
-
-    @SerializedName("Images")
-    public Bitmap[] images;
 }
