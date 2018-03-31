@@ -70,4 +70,8 @@ public class WebService {
         return mService.addImage(id, img);
     }
 
+    public Call<RegisterResponse> changeName(String fbId, String firstName, String lastName){
+        return mService.changeName(fbId, lastName, firstName);
+    }
+
 }

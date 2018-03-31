@@ -33,6 +33,7 @@ import java.util.List;
 import polytechnique.toursita.R;
 import polytechnique.toursita.activities.AddExperienceActivity;
 import polytechnique.toursita.activities.ExperienceActivity;
+import polytechnique.toursita.activities.MapActivity;
 import polytechnique.toursita.webService.LocationRequestResponse;
 import polytechnique.toursita.webService.WebService;
 import retrofit2.Call;
@@ -71,11 +72,13 @@ public class MapFrag extends Fragment{
                 m.setTag(location._id);
                 markers.add(m);
             }
+            ((MapActivity)getActivity()).hideLoadingScreen();
         }
 
         @Override
         public void onFailure(Call<LocationRequestResponse[]> call, Throwable t) {
             Toast.makeText(getActivity(), "Une erreur c\'est produite lors de l\'aquisition de lieu pres de vous.", Toast.LENGTH_LONG).show();
+            ((MapActivity)getActivity()).hideLoadingScreen();
         }
     };
 
@@ -162,6 +165,7 @@ public class MapFrag extends Fragment{
     }
 
     private void getLocations(LatLng position){
+        ((MapActivity)getActivity()).showLoadingScreen();
         int range = Integer.parseInt(distance.getText().toString());
         webService.getNearLocations(range, position).enqueue(locationsCallback);
     }

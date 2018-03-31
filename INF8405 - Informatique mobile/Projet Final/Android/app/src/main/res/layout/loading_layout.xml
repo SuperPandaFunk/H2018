@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:alpha="0.5"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
+    android:id="@+id/loadingScreen"
+    android:clickable="true">
+
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/load"
+        android:layout_centerInParent="true"
+        android:tint="@color/white"/>
+
+</RelativeLayout>

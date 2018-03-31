@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -44,12 +46,14 @@ public class AuthActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private WebService webService;
     private LoginButton loginButton;
+    private RelativeLayout loadingView;
 
     Callback<RegisterResponse> isUserExist = new Callback<RegisterResponse>() {
         @Override
         public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
             if (response.body() != null){
-                saveUserAndGo(response.body()._id);
+                hideLoadingScreen();
+                saveUserAndGo(response.body()._id, response.body().FirstName, response.body().LastName);
             }
             else {
                 webService.registerFacebook(AccessToken.getCurrentAccessToken().getUserId(), SharedPreferenceManager.getFirstName(getApplicationContext()), SharedPreferenceManager.getLastName(getApplicationContext()))
@@ -60,6 +64,7 @@ public class AuthActivity extends AppCompatActivity {
         @Override
         public void onFailure(Call<RegisterResponse> call, Throwable t) {
             loginButton.setEnabled(true);
+            hideLoadingScreen();
             Toast.makeText(getApplicationContext(), "Une erreur c\'est produite lors de la requete au serveur", Toast.LENGTH_LONG).show();
         }
     };
@@ -67,18 +72,22 @@ public class AuthActivity extends AppCompatActivity {
     Callback<RegisterResponse> registerUserCallBack = new Callback<RegisterResponse>() {
         @Override
         public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
-            saveUserAndGo(response.body()._id);
+            hideLoadingScreen();
+            saveUserAndGo(response.body()._id, response.body().FirstName, response.body().LastName);
         }
 
         @Override
         public void onFailure(Call<RegisterResponse> call, Throwable t) {
             loginButton.setEnabled(true);
+            hideLoadingScreen();
             Toast.makeText(getApplicationContext(), "Une erreur c\'est produite lors de la requete au serveur", Toast.LENGTH_LONG).show();
         }
     };
 
-    private void saveUserAndGo(String id){
+    private void saveUserAndGo(String id, String firstName, String lastName){
         SharedPreferenceManager.setToken(AccessToken.getCurrentAccessToken().getToken(), id, getApplicationContext());
+        SharedPreferenceManager.setName(firstName, lastName, getApplicationContext());
+        hideLoadingScreen();
         Intent intent = new Intent(getApplicationContext(), MapActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -96,6 +105,7 @@ public class AuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.auth_layout);
+        loadingView = findViewById(R.id.loadingScreen);
         webService = new WebService();
         loginButton = findViewById(R.id.fbLoginButton);
         loginButton.setEnabled(true);
@@ -112,13 +122,11 @@ public class AuthActivity extends AppCompatActivity {
                     AccessToken.getCurrentAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
-                        public void onCompleted(JSONObject object,
-                                                GraphResponse response) {
-                            SharedPreferenceManager.setName(Profile.getCurrentProfile().getFirstName(), Profile.getCurrentProfile().getLastName(), getApplicationContext());
-                        }
+                        public void onCompleted(JSONObject object,GraphResponse response) {}
                     });
             request.executeAsync();
             //// Query au serveur /////
+            showLoadingScreen();
             webService.getUser(AccessToken.getCurrentAccessToken().getUserId()).enqueue(isUserExist);
             ///////////////////////////
         }
@@ -137,6 +145,13 @@ public class AuthActivity extends AppCompatActivity {
         }
     };
 
+    private void showLoadingScreen(){
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen(){
+        loadingView.setVisibility(View.GONE);
+    }
 
     public void printHashKey(Context pContext) {
         String TAG = "hash";

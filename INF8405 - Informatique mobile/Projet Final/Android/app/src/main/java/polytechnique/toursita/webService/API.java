@@ -7,6 +7,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
@@ -27,6 +28,10 @@ interface API {
     @FormUrlEncoded
     @POST("api/locations/comment/{id}")
     Call<AddCommentResponse> addComment(@Path("id")String id, @Field("postedBy")String postedBy, @Field("text")String text);
+
+    @FormUrlEncoded
+    @PUT("api/users/{fbid}")
+    Call<RegisterResponse> changeName(@Path("fbid")String fbId, @Field("LastName")String lastName, @Field("FirstName")String firstName);
 
     @Multipart
     @POST("api/locations/image/{id}")

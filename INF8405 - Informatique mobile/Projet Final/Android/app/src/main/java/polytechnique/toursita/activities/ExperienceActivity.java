@@ -11,24 +11,18 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -36,7 +30,6 @@ import polytechnique.toursita.R;
 import polytechnique.toursita.manager.SharedPreferenceManager;
 import polytechnique.toursita.webService.AddCommentResponse;
 import polytechnique.toursita.webService.Comment;
-import polytechnique.toursita.webService.Image;
 import polytechnique.toursita.webService.ImageData;
 import polytechnique.toursita.webService.ImageUploadResult;
 import polytechnique.toursita.webService.LocationRequestResponse;
@@ -57,6 +50,7 @@ public class ExperienceActivity extends AppCompatActivity {
     private RelativeLayout commentGroup;
     private WebService webService;
     private String locationId;
+    private RelativeLayout loadingView;
 
     public final int RESULT_LOAD_IMG = 400;
 
@@ -66,13 +60,14 @@ public class ExperienceActivity extends AppCompatActivity {
             if (response.isSuccessful() && response.body().success){
                 getLocation();
             }else{
+                hideLoadingScreen();
                 Toast.makeText(getApplicationContext(), "Une erreur c\'est produite lors de l\'ajout de l\'image", Toast.LENGTH_LONG).show();
-                getLocation();
             }
         }
 
         @Override
         public void onFailure(Call<ImageUploadResult> call, Throwable t) {
+            hideLoadingScreen();
             Toast.makeText(getApplicationContext(), "Une erreur c\'est produite lors de l\'ajout de l\'image", Toast.LENGTH_LONG).show();
         }
     };
@@ -92,27 +87,13 @@ public class ExperienceActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
-        /*super.onActivityResult(reqCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            try {
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                webService.addImage(imageEncoded).enqueue(uploadImageCallback);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Quelque chose c\'est mal passe", Toast.LENGTH_LONG).show();
-            }
-
-        }else {
-            Toast.makeText(getApplicationContext(), "Vous n\'avez pas selectionner d\'image",Toast.LENGTH_LONG).show();
-        }*/
         if (resultCode == RESULT_OK) {
             Uri selectedImageURI = data.getData();
             File imageFile = new File(getRealPathFromURI(selectedImageURI));
 
             RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
             MultipartBody.Part imageToSend = MultipartBody.Part.createFormData("image", imageFile.getName(), requestFile);
+            showLoadingScreen();
             webService.addImage(locationId, imageToSend).enqueue(uploadImageCallback);
         }
     }
@@ -136,6 +117,7 @@ public class ExperienceActivity extends AppCompatActivity {
         public void onClick(View view) {
             if (commentBox.getText().toString().equals(""))
                 return;
+            showLoadingScreen();
             webService.addComment(locationId, SharedPreferenceManager.getUserId(getApplicationContext()), commentBox.getText().toString()).enqueue(new Callback<AddCommentResponse>() {
                 @Override
                 public void onResponse(Call<AddCommentResponse> call, Response<AddCommentResponse> response) {
@@ -175,6 +157,7 @@ public class ExperienceActivity extends AppCompatActivity {
         setContentView(R.layout.experience_layout);
         initializeView();
         webService = new WebService();
+        showLoadingScreen();
         getLocation();
     }
 
@@ -189,6 +172,7 @@ public class ExperienceActivity extends AppCompatActivity {
         commentBox = findViewById(R.id.commentBox);
         okComment = findViewById(R.id.ok_comment);
         commentGroup = findViewById(R.id.commentGroup);
+        loadingView = findViewById(R.id.loadingScreen);
 
         backArrow.setOnClickListener(backArrowListener);
         addComment.setOnClickListener(addCommentListener);
@@ -213,6 +197,19 @@ public class ExperienceActivity extends AppCompatActivity {
 
             commentView.addView(thisComment);
         }
+        if (data.comments.length == 0){
+            View thisComment = LayoutInflater.from(this).inflate(R.layout.comment_row, commentView, false);
+
+            TextView postedBy = thisComment.findViewById(R.id.posterId);
+            TextView actualComment = thisComment.findViewById(R.id.coreComment);
+            TextView ecrtiPar = thisComment.findViewById(R.id.ecritPar);
+
+            postedBy.setVisibility(View.GONE);
+            actualComment.setText("Il n\'y a aucun commentaire");
+            ecrtiPar.setVisibility(View.GONE);
+
+            commentView.addView(thisComment);
+        }
     }
 
     private void addImages(ImageData[] data){
@@ -229,6 +226,14 @@ public class ExperienceActivity extends AppCompatActivity {
 
             imageView.addView(thisImage);
         }
+        if(data.length == 0){
+            View thisImage = LayoutInflater.from(this).inflate(R.layout.image_layout, imageView, false);
+
+            ImageView imgView = thisImage.findViewById(R.id.imageContainer);
+            imgView.setImageResource(R.drawable.aucune_image);
+
+            imageView.addView(thisImage);
+        }
     }
 
     private void getLocation(){
@@ -241,11 +246,13 @@ public class ExperienceActivity extends AppCompatActivity {
                     populateView(response.body());
                     addImages(response.body().images);
                 }
+                hideLoadingScreen();
             }
 
             @Override
             public void onFailure(Call<LocationRequestResponse> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Erreur lors de la recherche d'infomation sur l\'endroit.", Toast.LENGTH_LONG).show();
+                hideLoadingScreen();
             }
         });
     }
@@ -256,5 +263,13 @@ public class ExperienceActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    private void showLoadingScreen(){
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen(){
+        loadingView.setVisibility(View.GONE);
     }
 }

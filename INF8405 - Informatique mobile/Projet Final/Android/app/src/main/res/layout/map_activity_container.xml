@@ -19,4 +19,6 @@
         android:id="@+id/option"
         android:layout_margin="10dp"/>
 
+    <include layout="@layout/loading_layout" android:visibility="gone"/>
+
 </RelativeLayout>

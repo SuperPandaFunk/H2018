@@ -1,46 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="3">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="3">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:text="Tourista"
-            android:layout_centerInParent="true"
-            android:id="@+id/title"
-            android:textStyle="bold"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/suitcase"
-            android:layout_below="@id/title"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:text="Tourista"
+                android:layout_centerInParent="true"
+                android:id="@+id/title"
+                android:textStyle="bold"/>
 
-    </RelativeLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/suitcase"
+                android:layout_below="@id/title"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        </RelativeLayout>
 
-        <com.facebook.login.widget.LoginButton
-            android:layout_margin="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/fbLoginButton"
-            android:layout_centerInParent="true"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-    </RelativeLayout>
+            <com.facebook.login.widget.LoginButton
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fbLoginButton"
+                android:layout_centerInParent="true"/>
 
-</LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/loading_layout" android:visibility="gone"/>
+
+</RelativeLayout>

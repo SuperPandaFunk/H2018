@@ -1,124 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/back_arrow"
-        android:tint="@color/orang"
-        android:layout_marginTop="5dp"
-        android:id="@+id/backArrow"
-        android:nextFocusDown="@id/city"/>
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:id="@+id/mapContainer"
-        android:animateLayoutChanges="true">
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"/>
-
-    </LinearLayout>
-
-    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/relLayout"
-        android:animateLayoutChanges="true">
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_arrow"
+            android:tint="@color/orang"
+            android:layout_marginTop="5dp"
+            android:id="@+id/backArrow"
+            android:nextFocusDown="@id/city"/>
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:id="@+id/mapContainer"
+            android:animateLayoutChanges="true">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/silver_outline"
-                android:hint="Adresse de la nouvelle experience"
-                android:padding="10dp"
-                android:id="@+id/address"
-                android:maxLines="1"
-                android:nextFocusDown="@id/description"
-                android:imeOptions="actionNext"
-                android:inputType="text"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/silver_outline"
-                android:hint="Ville de la nouvelle experience"
-                android:padding="10dp"
-                android:id="@+id/city"
-                android:maxLines="1"
-                android:imeOptions="actionNext"
-                android:inputType="text"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:padding="10dp"
-                android:background="@drawable/silver_outline"
-                android:hint="Description"
-                android:lines="4"
-                android:maxLines="6"
-                android:id="@+id/description"
-                android:inputType="text"
-                android:imeOptions="actionDone"/>
+            android:id="@+id/relLayout"
+            android:animateLayoutChanges="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_alignParentBottom="true"
-                android:paddingBottom="10dp"
-                android:weightSum="2">
+                android:orientation="vertical">
 
-                <Button
-                    android:layout_width="0dp"
+                <EditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/round_corners_button_orang"
-                    android:text="Verifier la position sur le carte"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/silver_outline"
+                    android:hint="Adresse de la nouvelle experience"
                     android:padding="10dp"
-                    android:textColor="@color/white"
-                    android:id="@+id/viewOnMap"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="5dp"/>
+                    android:id="@+id/address"
+                    android:maxLines="1"
+                    android:nextFocusDown="@id/description"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"/>
 
-                <Button
-                    android:layout_width="0dp"
+                <EditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/round_corners_button_orang"
-                    android:text="Ajouter cette endroit!"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/silver_outline"
+                    android:hint="Ville de la nouvelle experience"
                     android:padding="10dp"
-                    android:textColor="@color/white"
-                    android:id="@+id/confirmExperience"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"/>
+                    android:id="@+id/city"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/silver_outline"
+                    android:hint="Description"
+                    android:lines="4"
+                    android:maxLines="6"
+                    android:id="@+id/description"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentBottom="true"
+                    android:paddingBottom="10dp"
+                    android:weightSum="2">
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/round_corners_button_orang"
+                        android:text="Verifier la position sur le carte"
+                        android:padding="10dp"
+                        android:textColor="@color/white"
+                        android:id="@+id/viewOnMap"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"/>
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/round_corners_button_orang"
+                        android:text="Ajouter cette endroit!"
+                        android:padding="10dp"
+                        android:textColor="@color/white"
+                        android:id="@+id/confirmExperience"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
-</LinearLayout>
+    <include layout="@layout/loading_layout" android:visibility="gone"/>
+
+</RelativeLayout>

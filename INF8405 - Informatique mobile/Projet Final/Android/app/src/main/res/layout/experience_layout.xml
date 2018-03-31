@@ -69,7 +69,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Biodome de Montreal"
                     android:textColor="@android:color/black"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
@@ -80,7 +79,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="123 de la rue ici"
                     android:textColor="@android:color/black"
                     android:layout_marginStart="10dp"
                     android:textSize="15sp"
@@ -168,5 +166,7 @@
             android:layout_toLeftOf="@id/ok_comment"/>
 
     </RelativeLayout>
+
+    <include layout="@layout/loading_layout" android:visibility="gone"/>
 
 </RelativeLayout>

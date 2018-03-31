@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import polytechnique.toursita.R;
 import polytechnique.toursita.fragments.MapFrag;
@@ -18,6 +19,7 @@ import polytechnique.toursita.fragments.MapFrag;
 public class MapActivity extends AppCompatActivity{
 
     private ImageButton optionButton;
+    private RelativeLayout loadingLayout;
 
     View.OnClickListener optionListener = new View.OnClickListener() {
         @Override
@@ -43,7 +45,16 @@ public class MapActivity extends AppCompatActivity{
 
     private void initializeView(){
         optionButton = findViewById(R.id.option);
+        loadingLayout = findViewById(R.id.loadingScreen);
 
         optionButton.setOnClickListener(optionListener);
+    }
+
+    public void showLoadingScreen(){
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void hideLoadingScreen(){
+        loadingLayout.setVisibility(View.GONE);
     }
 }

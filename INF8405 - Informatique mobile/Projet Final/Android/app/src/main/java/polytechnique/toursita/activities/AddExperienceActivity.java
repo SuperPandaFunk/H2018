@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +46,7 @@ public class AddExperienceActivity extends AppCompatActivity {
     private GoogleMap mGoogleMap;
     private LinearLayout mapLayout;
     private Marker marker;
+    private RelativeLayout loadingView;
 
     private OnMapReadyCallback onMapReadyCallback = new OnMapReadyCallback() {
         @Override
@@ -58,6 +60,7 @@ public class AddExperienceActivity extends AppCompatActivity {
         public void onResponse(Call<LocationCreationResponse> call, Response<LocationCreationResponse> response) {
             Toast.makeText(getApplicationContext(), "Upload reussi!", Toast.LENGTH_LONG).show();
             closeKeyboard();
+            hideLoadingScreen();
             onBackPressed();
         }
 
@@ -70,26 +73,30 @@ public class AddExperienceActivity extends AppCompatActivity {
     View.OnClickListener confirmExperienceListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            showLoadingScreen();
             if (strAddress.getText().toString().matches("") || city.getText().toString().matches("")){
                 Toast.makeText(getApplicationContext(), "Veuillez remplir tous les champs!", Toast.LENGTH_LONG).show();
+                hideLoadingScreen();
                 return;
             }
             String address = strAddress.getText().toString() + ", " + city.getText().toString();
             LatLng result = getLocationFromAddress(getApplicationContext(), address);
             if (result != null){
                 webService.createLocation(result.latitude, result.longitude, getCompleteAddressString(result), description.getText().toString(), SharedPreferenceManager.getUserId(getApplicationContext())).enqueue(addLocationCallback);
-                Log.d("Experience", "lat: "+ result.latitude + "\tlon: " + result.longitude);
             }else{
                 Toast.makeText(getApplicationContext(), "L'addresse entrer n'est pas valide!", Toast.LENGTH_LONG).show();
             }
+            hideLoadingScreen();
         }
     };
 
     View.OnClickListener lookOnMapListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            showLoadingScreen();
             if (strAddress.getText().toString().matches("") || city.getText().toString().matches("")){
                 Toast.makeText(getApplicationContext(), "Veuillez remplir tous les champs!", Toast.LENGTH_LONG).show();
+                hideLoadingScreen();
                 return;
             }
             String address = strAddress.getText().toString() + ", " + city.getText().toString();
@@ -97,12 +104,13 @@ public class AddExperienceActivity extends AppCompatActivity {
             if (result != null){
                 closeKeyboard();
                 if (mapLayout.getVisibility() != View.VISIBLE){
+                    centerToLocation(result);
                     mapLayout.setVisibility(View.VISIBLE);
                 }
-                centerToLocation(result);
             }else{
                 Toast.makeText(getApplicationContext(), "L'addresse entrer n'est pas valide!", Toast.LENGTH_LONG).show();
             }
+            hideLoadingScreen();
         }
     };
 
@@ -131,6 +139,7 @@ public class AddExperienceActivity extends AppCompatActivity {
         mMapView = findViewById(R.id.mapView);
         mapLayout = findViewById(R.id.mapContainer);
         viewMapButton = findViewById(R.id.viewOnMap);
+        loadingView = findViewById(R.id.loadingScreen);
 
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
@@ -139,6 +148,12 @@ public class AddExperienceActivity extends AppCompatActivity {
         confirm.setOnClickListener(confirmExperienceListener);
         backArrow.setOnClickListener(backArrowListener);
         viewMapButton.setOnClickListener(lookOnMapListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideLoadingScreen();
     }
 
     public LatLng getLocationFromAddress(Context context, String strAddress) {
@@ -205,5 +220,13 @@ public class AddExperienceActivity extends AppCompatActivity {
             marker.remove();
         marker = mGoogleMap.addMarker(new MarkerOptions()
                 .position(position));
+    }
+
+    private void showLoadingScreen(){
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen(){
+        loadingView.setVisibility(View.GONE);
     }
 }
