@@ -139,6 +139,7 @@ public class ExperienceActivity extends AppCompatActivity {
     private View.OnClickListener addCommentListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            commentBox.setText("");
             commentGroup.setVisibility(View.VISIBLE);
             commentBox.requestFocus();
         }
