@@ -17,6 +17,7 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 
 import polytechnique.toursita.R;
+import polytechnique.toursita.manager.EnergyManager;
 import polytechnique.toursita.manager.SharedPreferenceManager;
 import polytechnique.toursita.webService.RegisterResponse;
 import polytechnique.toursita.webService.WebService;
@@ -34,6 +35,7 @@ public class OptionActivity extends Activity {
     private EditText firstName, lastName;
     private ImageView backArrow;
     private RelativeLayout loadingView;
+    private boolean ReallyLeaving;
 
     private View.OnClickListener logoutButtonListener = new View.OnClickListener() {
         @Override
@@ -89,6 +91,7 @@ public class OptionActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.option_layout);
+        ReallyLeaving = true;
         initializeView();
     }
 
@@ -122,5 +125,31 @@ public class OptionActivity extends Activity {
 
     private void hideLoadingScreen(){
         loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EnergyManager.getInstance().StartCounting(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EnergyManager.getInstance().StopCounting(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (ReallyLeaving)
+            EnergyManager.getInstance().StopCounting(this);
+        hideLoadingScreen();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ReallyLeaving = false;
     }
 }

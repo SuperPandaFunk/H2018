@@ -32,6 +32,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import polytechnique.toursita.R;
+import polytechnique.toursita.manager.EnergyManager;
 import polytechnique.toursita.manager.SharedPreferenceManager;
 import polytechnique.toursita.webService.AddCommentResponse;
 import polytechnique.toursita.webService.Comment;
@@ -57,6 +58,7 @@ public class ExperienceActivity extends AppCompatActivity {
     private String locationId;
     private RelativeLayout loadingView;
     private boolean picPermission = true;
+    private boolean ReallyLeaving;
 
     public final int RESULT_LOAD_IMG = 400;
 
@@ -165,6 +167,7 @@ public class ExperienceActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.experience_layout);
+        ReallyLeaving = true;
         initializeView();
         webService = new WebService();
         showLoadingScreen();
@@ -201,7 +204,12 @@ public class ExperienceActivity extends AppCompatActivity {
             TextView postedBy = thisComment.findViewById(R.id.posterId);
             TextView actualComment = thisComment.findViewById(R.id.coreComment);
 
-            String name = com.postedBy.FirstName + " " + com.postedBy.LastName;
+            String name = "";
+            if (com.postedBy == null){
+                name = "Anon";
+            }else{
+                name = com.postedBy.FirstName + " " + com.postedBy.LastName;
+            }
             postedBy.setText(name);
             actualComment.setText(com.text);
 
@@ -304,5 +312,31 @@ public class ExperienceActivity extends AppCompatActivity {
 
     private void hideLoadingScreen(){
         loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EnergyManager.getInstance().StartCounting(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EnergyManager.getInstance().StopCounting(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (ReallyLeaving)
+            EnergyManager.getInstance().StopCounting(this);
+        hideLoadingScreen();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ReallyLeaving = false;
     }
 }

@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/main_container"/>
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:id="@+id/navigationBarContainer"
+        android:layout_alignParentBottom="true"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black"
+        android:layout_above="@id/navigationBarContainer"
+        android:id="@+id/navBarSeparator"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_container"
+        android:layout_above="@id/navBarSeparator"/>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
         android:src="@drawable/gear_icon"
+        android:tint="@color/orang"
         android:background="@android:color/transparent"
-        android:tint="@color/transparentGray"
-        android:id="@+id/option"
-        android:layout_margin="10dp"/>
+        android:id="@+id/option"/>
 
-    <include layout="@layout/loading_layout" android:visibility="gone"/>
+    <include layout="@layout/loading_layout"/>
+
+
 
 </RelativeLayout>

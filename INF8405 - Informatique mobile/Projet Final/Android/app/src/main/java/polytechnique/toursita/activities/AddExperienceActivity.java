@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 import polytechnique.toursita.R;
+import polytechnique.toursita.manager.EnergyManager;
 import polytechnique.toursita.manager.SharedPreferenceManager;
 import polytechnique.toursita.webService.LocationCreationResponse;
 import polytechnique.toursita.webService.WebService;
@@ -47,6 +48,7 @@ public class AddExperienceActivity extends AppCompatActivity {
     private LinearLayout mapLayout;
     private Marker marker;
     private RelativeLayout loadingView;
+    private boolean ReallyLeaving;
 
     private OnMapReadyCallback onMapReadyCallback = new OnMapReadyCallback() {
         @Override
@@ -103,10 +105,8 @@ public class AddExperienceActivity extends AppCompatActivity {
             LatLng result = getLocationFromAddress(getApplicationContext(), address);
             if (result != null){
                 closeKeyboard();
-                if (mapLayout.getVisibility() != View.VISIBLE){
-                    centerToLocation(result);
-                    mapLayout.setVisibility(View.VISIBLE);
-                }
+                centerToLocation(result);
+                mapLayout.setVisibility(View.VISIBLE);
             }else{
                 Toast.makeText(getApplicationContext(), "L'addresse entrer n'est pas valide!", Toast.LENGTH_LONG).show();
             }
@@ -126,6 +126,7 @@ public class AddExperienceActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_experience_layout);
+        ReallyLeaving = true;
         initializeView(savedInstanceState);
         webService = new WebService();
     }
@@ -148,12 +149,6 @@ public class AddExperienceActivity extends AppCompatActivity {
         confirm.setOnClickListener(confirmExperienceListener);
         backArrow.setOnClickListener(backArrowListener);
         viewMapButton.setOnClickListener(lookOnMapListener);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        hideLoadingScreen();
     }
 
     public LatLng getLocationFromAddress(Context context, String strAddress) {
@@ -228,5 +223,31 @@ public class AddExperienceActivity extends AppCompatActivity {
 
     private void hideLoadingScreen(){
         loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EnergyManager.getInstance().StartCounting(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EnergyManager.getInstance().StopCounting(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (ReallyLeaving)
+            EnergyManager.getInstance().StopCounting(this);
+        hideLoadingScreen();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ReallyLeaving = false;
     }
 }

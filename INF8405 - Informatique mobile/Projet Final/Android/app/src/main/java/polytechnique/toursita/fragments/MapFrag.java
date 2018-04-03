@@ -167,7 +167,12 @@ public class MapFrag extends Fragment{
 
     private void getLocations(LatLng position){
         ((MapActivity)getActivity()).showLoadingScreen();
-        int range = Integer.parseInt(distance.getText().toString());
+        int range = 0;
+        if (distance.getText().toString().matches("")){
+            range = 0;
+        }else {
+            range = Integer.parseInt(distance.getText().toString());
+        }
         webService.getNearLocations(range, position).enqueue(locationsCallback);
     }
 
