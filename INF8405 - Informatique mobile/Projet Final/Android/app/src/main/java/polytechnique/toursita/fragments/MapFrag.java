@@ -128,9 +128,10 @@ public class MapFrag extends Fragment{
             mGoogleMap.setOnMarkerClickListener(onMarkerClickListener);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }else {
+                googleMap.setMyLocationEnabled(true);
+                mFusedLocationClient.getLastLocation().addOnSuccessListener(locationSuccess);
             }
-            googleMap.setMyLocationEnabled(true);
-            mFusedLocationClient.getLastLocation().addOnSuccessListener(locationSuccess);
         }
     };
 

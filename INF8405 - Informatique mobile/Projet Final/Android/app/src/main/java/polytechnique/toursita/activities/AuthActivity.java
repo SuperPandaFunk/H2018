@@ -1,11 +1,14 @@
 package polytechnique.toursita.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -47,6 +50,7 @@ public class AuthActivity extends AppCompatActivity {
     private WebService webService;
     private LoginButton loginButton;
     private RelativeLayout loadingView;
+    private String firstNameFb, lastNameFb;
 
     Callback<RegisterResponse> isUserExist = new Callback<RegisterResponse>() {
         @Override
@@ -56,7 +60,7 @@ public class AuthActivity extends AppCompatActivity {
                 saveUserAndGo(response.body()._id, response.body().FirstName, response.body().LastName);
             }
             else {
-                webService.registerFacebook(AccessToken.getCurrentAccessToken().getUserId(), SharedPreferenceManager.getFirstName(getApplicationContext()), SharedPreferenceManager.getLastName(getApplicationContext()))
+                webService.registerFacebook(AccessToken.getCurrentAccessToken().getUserId(), firstNameFb, lastNameFb)
                         .enqueue(registerUserCallBack);
             }
         }
@@ -107,6 +111,11 @@ public class AuthActivity extends AppCompatActivity {
         setContentView(R.layout.auth_layout);
         loadingView = findViewById(R.id.loadingScreen);
         webService = new WebService();
+        firstNameFb = "";
+        lastNameFb = "";
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
         loginButton = findViewById(R.id.fbLoginButton);
         loginButton.setEnabled(true);
         loginButton.setReadPermissions(Arrays.asList("public_profile"));
@@ -122,7 +131,10 @@ public class AuthActivity extends AppCompatActivity {
                     AccessToken.getCurrentAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
-                        public void onCompleted(JSONObject object,GraphResponse response) {}
+                        public void onCompleted(JSONObject object,GraphResponse response) {
+                            firstNameFb = Profile.getCurrentProfile().getFirstName();
+                            lastNameFb = Profile.getCurrentProfile().getLastName();
+                        }
                     });
             request.executeAsync();
             //// Query au serveur /////

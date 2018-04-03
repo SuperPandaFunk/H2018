@@ -1,14 +1,19 @@
 package polytechnique.toursita.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -51,6 +56,7 @@ public class ExperienceActivity extends AppCompatActivity {
     private WebService webService;
     private String locationId;
     private RelativeLayout loadingView;
+    private boolean picPermission = true;
 
     public final int RESULT_LOAD_IMG = 400;
 
@@ -78,6 +84,9 @@ public class ExperienceActivity extends AppCompatActivity {
             if (locationId ==  null){
                 Toast.makeText(getApplicationContext(), "Attendre que la page load s\'il vous plait.", Toast.LENGTH_LONG).show();
                 return;
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                checkPermissions();
             }
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
@@ -263,6 +272,29 @@ public class ExperienceActivity extends AppCompatActivity {
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private void checkPermissions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED|| ContextCompat.checkSelfPermission(this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},1052);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1052: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    picPermission = true;
+                } else {
+                    picPermission = false;
+                    Toast.makeText(getApplicationContext(), "Pour ajouter une photo, il faut avoir la permissions", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
         }
     }
 
