@@ -15,7 +15,7 @@ import polytechnique.toursita.manager.EnergyManager;
 
 public class PowerFrag extends Fragment{
 
-    private TextView quantity, time, totalTime, hourEstimate;
+    private TextView quantity, time, totalTime, hourEstimate, data, temperature;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Button reset;
 
@@ -42,7 +42,8 @@ public class PowerFrag extends Fragment{
         totalTime = view.findViewById(R.id.totalTime);
         hourEstimate = view.findViewById(R.id.consumption);
         reset = view.findViewById(R.id.resetButton);
-
+        data = view.findViewById(R.id.internetConsuption);
+        temperature = view.findViewById(R.id.temperature);
         swipeRefreshLayout.setOnRefreshListener(swipeListener);
         reset.setOnClickListener(resetListener);
         refreshLayout();
@@ -92,7 +93,8 @@ public class PowerFrag extends Fragment{
         double consommation = EnergyManager.getInstance().getEnergyConsumed(getContext()) / nbHeure;
         hourEstimate.setText(String.format("%.02f", consommation) + "% / hrs");
         totalTime.setText(parseHourToString(EnergyManager.getInstance().getBatteryLevel(getContext()) / consommation) + " restant");
-
+        data.setText(EnergyManager.getInstance().getDataInfo());
+        temperature.setText(EnergyManager.getInstance().temperature());
         swipeRefreshLayout.setRefreshing(false);
     }
 

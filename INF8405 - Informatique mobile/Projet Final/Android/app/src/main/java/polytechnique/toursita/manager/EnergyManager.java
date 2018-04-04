@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.net.TrafficStats;
 import android.widget.Toast;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import java.util.Calendar;
 
@@ -13,14 +16,16 @@ public class EnergyManager {
     private int totalEnergyConsumed, startEnergy, endEnergy;
     private long startTime, totalTime;
     private boolean counting;
+    private TrafficStats internet;
 
-    private EnergyManager(){
+     private EnergyManager(){
         totalEnergyConsumed = 0;
         startEnergy = 0;
         endEnergy = 0;
         totalTime = 0;
         startTime = 0;
         counting = false;
+        internet = new TrafficStats();
     }
 
     public static EnergyManager getInstance(){
@@ -108,4 +113,57 @@ public class EnergyManager {
         SharedPreferenceManager.setTotalEnergy(mContext, 0);
         SharedPreferenceManager.setTotalTime(mContext, 0);
     }
+
+    public long getDownload(){
+        return internet.getUidRxBytes(android.os.Process.myUid());
+    }
+
+    public long getUploads(){
+        return internet.getUidTxBytes(android.os.Process.myUid());
+    }
+
+    public String getDataInfo()
+    {
+         String Download = getSuffix(getDownload());
+         String Upload = getSuffix(getUploads());
+         return "Download: " + Download + " | Upload: " + Upload;
+    }
+
+    private String getSuffix(long val){
+        String Dsuffix = "";
+        if(val > 1073741824){
+            Dsuffix = val/1073741824 + " Go";
+        }else if(val > 1048576) {
+            Dsuffix = val/1048576 + " Mo";
+        }else if (val > 1024){
+            Dsuffix = val/1024 + " Ko";
+        }else {
+            Dsuffix = val + " o";
+        }
+        return Dsuffix;
+    }
+
+    public String temperature(){
+
+        return getCpuTemp() +" °C";
+    }
+
+    public float getCpuTemp() {
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone0/temp");
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line = reader.readLine();
+            float temp = Float.parseFloat(line) / 1000.0f;
+
+            return temp;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0f;
+        }
+    }
+
 }
