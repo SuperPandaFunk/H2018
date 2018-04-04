@@ -17,6 +17,8 @@ public class EnergyManager {
     private long startTime, totalTime;
     private boolean counting;
     private TrafficStats internet;
+    private float temperature, humidity;
+    private boolean isTemperatureSensor, isHumiditySensor;
 
      private EnergyManager(){
         totalEnergyConsumed = 0;
@@ -24,6 +26,10 @@ public class EnergyManager {
         endEnergy = 0;
         totalTime = 0;
         startTime = 0;
+        temperature = 0.0f;
+        humidity = 0.0f;
+        isTemperatureSensor = false;
+        isHumiditySensor = false;
         counting = false;
         internet = new TrafficStats();
     }
@@ -144,7 +150,6 @@ public class EnergyManager {
     }
 
     public String temperature(){
-
         return getCpuTemp() +" °C";
     }
 
@@ -164,6 +169,34 @@ public class EnergyManager {
             e.printStackTrace();
             return 0.0f;
         }
+    }
+
+    public String getTemperature(){
+         if (isTemperatureSensor)
+            return String.format("%.02f", temperature);
+         return "Aucun sensor sur cet appareil";
+    }
+
+    public void setTemperature(float value){
+         temperature = value;
+    }
+
+    public void setIsTemperatureSensor(boolean value){
+         isTemperatureSensor = value;
+    }
+
+    public String getHumidity(){
+        if (isHumiditySensor)
+            return String.format("%.02f", humidity);
+        return "Aucun sensor sur cet appareil";
+    }
+
+    public void setHumidity(float value){
+        humidity = value;
+    }
+
+    public void setIsHumiditySensor(boolean value){
+        isHumiditySensor = value;
     }
 
 }

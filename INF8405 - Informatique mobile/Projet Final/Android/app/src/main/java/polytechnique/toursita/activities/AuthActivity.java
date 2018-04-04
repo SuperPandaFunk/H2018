@@ -109,6 +109,7 @@ public class AuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.auth_layout);
+        printHashKey(this);
         loadingView = findViewById(R.id.loadingScreen);
         webService = new WebService();
         firstNameFb = "";
