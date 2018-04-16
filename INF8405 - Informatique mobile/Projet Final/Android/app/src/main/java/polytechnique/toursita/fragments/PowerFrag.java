@@ -68,12 +68,14 @@ public class PowerFrag extends Fragment{
                 try{
                     while(!isInterrupted()){
                         Thread.sleep(1000);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                refreshLayout();
-                            }
-                        });
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    refreshLayout();
+                                }
+                            });
+                        }
                     }
                 }catch (InterruptedException e){ }
             }
