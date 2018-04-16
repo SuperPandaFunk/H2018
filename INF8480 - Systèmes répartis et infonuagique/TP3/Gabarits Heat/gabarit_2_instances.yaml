@@ -1,0 +1,81 @@
+heat_template_version: 2014-10-16
+
+description: A template to deploy a load balanced web server
+
+parameters:
+
+  key_name:
+      type: string
+      description: Name of an existing key pair to use for the server
+      default: mykey
+      constraints:
+        - custom_constraint: nova.keypair
+
+  image:
+    type: string
+    description: Image utilisee pour les serveurs
+    default: INF4410-Ubuntu-trusty-mini
+
+  flavor:
+    type: string
+    description: Flavor utilisee par les serveurs
+    default: INF4410-mini
+
+  subnet_id:
+    type: string
+    description: Sous-reseau dans lequel le load balancer sera situe
+    default: inf4410-net
+
+  ext_id:
+    type: string
+    description: Sous-reseau dans lequel le load balancer sera situe
+    default: 6579eb07-88c3-4707-9c6e-ab90a78cca02
+
+resources:
+  server_nodes:
+      type: OS::Heat::ResourceGroup
+      properties:
+        count: 2
+        resource_def:
+          type: OS::Nova::Server
+          properties:
+            key_name: { get_param: key_name }
+            image: { get_param: image }
+            flavor: { get_param: flavor }
+            networks:
+              - network: { get_param: subnet_id }
+            user_data: |
+              #!/bin/bash
+              wget https://raw.githubusercontent.com/houssemmh/INF4410-TP3/master/server.py
+              python server.py &
+
+  mypool:
+      type: OS::Neutron::Pool
+      properties:
+        protocol: HTTP
+        monitors: [{get_resource: monitor}]
+        subnet_id: {get_param: ext_id}
+        lb_method: ROUND_ROBIN
+        vip:
+          protocol_port: 8000
+
+  loadbalancer:
+      type: OS::Neutron::LoadBalancer
+      properties:
+        protocol_port: 8000
+        pool_id: {get_resource: mypool}
+        members: {get_attr: [server_nodes, refs]}
+
+  monitor:
+      type: OS::Neutron::HealthMonitor
+      properties:
+        type: TCP
+        delay: 10
+        max_retries: 1
+        timeout: 4
+
+
+outputs:
+  pool_ip_address:
+    value: {get_attr: [mypool, vip, address]}
+    description: The IP address of the load balancing pool
